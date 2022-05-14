@@ -5,6 +5,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "rol")
 public class Rol {
+    public Rol(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Rol(Long id, String nombre) {
         super();
         this.id = id;
