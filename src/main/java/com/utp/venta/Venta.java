@@ -1,4 +1,7 @@
-package com.utp.venta;
+package com.utp.venta.Modelos;
+
+import com.utp.venta.Modelos.ProductoVendido;
+import com.utp.venta.Utilitarios.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -7,11 +10,11 @@ import java.util.Set;
 public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String fechaYHora;
+    public   Integer id;
+    public String fechaYHora;
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
-    private Set<ProductoVendido> productos;
+    public Set<ProductoVendido> productos;
 
     public Venta() {
         this.fechaYHora = Utiles.obtenerFechaYHoraActual();

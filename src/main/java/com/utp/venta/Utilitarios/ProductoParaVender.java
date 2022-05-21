@@ -1,5 +1,7 @@
 package com.utp.venta;
 
+import com.utp.venta.Modelos.Producto;
+
 public class ProductoParaVender extends Producto {
     private Float cantidad;
 

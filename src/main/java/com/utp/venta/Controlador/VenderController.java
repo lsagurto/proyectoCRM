@@ -1,5 +1,12 @@
 package com.utp.venta;
 
+import com.utp.venta.Modelos.Producto;
+import com.utp.venta.Modelos.ProductoVendido;
+import com.utp.venta.Venta;
+import com.utp.venta.Repository.ProductosRepository;
+import com.utp.venta.Repository.ProductosVendidosRepository;
+import com.utp.venta.Repository.VentasRepository;
+import com.utp.venta.ProductoParaVender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
