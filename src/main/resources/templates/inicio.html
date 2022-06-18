@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="layouts/encabezado :: encabezado">
+    <meta charset="UTF-8">
+    <title>Sistema Chirinos</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ml-5">
+                    <a th:href="@{/auth/login}">Login</a>
+                </li>
+                <li class="nav-item ml-5">
+                    <a th:href="@{/auth/registro}">Registro</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>

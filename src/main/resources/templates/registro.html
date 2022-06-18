@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="layouts/encabezado :: encabezado">
+    <meta charset="UTF-8">
+    <title>Sistema Chirinos</title>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Registro</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/auth/registro}" th:object="${usuario}" method="POST">
+                        <div class="row form-group">
+                            <label class="col-md-3">Nombre</label>
+                            <input type="text"class="form-control-md-7" th:field="*{nombre}"/>
+                            <small th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Usuario</label>
+                            <input type="text" class="form-control-md-7" th:field="*{username}"/>
+                            <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Email</label>
+                            <input type="email"class="form-control-md-7" th:field="*{email}"/>
+                            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Password</label>
+                            <input type="password"class="form-control-md-7" th:field="*{password}"/>
+                            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                        </div>
+                        <div class="row form-group">
+                            <input type="submit"class="btn btn-success btn-black col-md-7 offset-3" value="Continuar"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

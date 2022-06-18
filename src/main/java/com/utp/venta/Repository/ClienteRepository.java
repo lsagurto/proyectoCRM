@@ -1,12 +1,12 @@
 package com.utp.venta.Repository;
 
-import com.utp.venta.Modelos.Usuario;
+import com.utp.venta.Modelos.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
    //public Usuario findFirstByUsuario(String usuario);
-    public Usuario findByUsername(String username);
+    public Cliente findByNumeroDocumento (String numeroDocumento);
 }

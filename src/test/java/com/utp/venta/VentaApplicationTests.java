@@ -8,6 +8,7 @@ class VentaApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

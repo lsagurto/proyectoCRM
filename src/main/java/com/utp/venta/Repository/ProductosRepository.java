@@ -1,4 +1,4 @@
-package com.utp.venta;
+package com.utp.venta.Repository;
 
 import com.utp.venta.Modelos.Producto;
 import org.springframework.data.repository.CrudRepository;

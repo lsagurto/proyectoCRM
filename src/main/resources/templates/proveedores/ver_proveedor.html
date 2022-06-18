@@ -6,37 +6,42 @@
 <body>
 <main layout:fragment="contenido">
     <div class="col-12">
-        <h2>Productos</h2>
+        <h2>Proveedores</h2>
         <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
              th:text="${mensaje}"
              class="alert">
         </div>
-        <a class="btn btn-success mb-2" th:href="@{/productos/agregar}">Agregar</a>
+        <a class="btn btn-success mb-2" th:href="@{/proveedor/agregar}">Agregar</a>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Código</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
+                    <th>razon Social</th>
+                    <th>Tipo Documento</th>
+                    <th>Numero Documento</th>
+                    <th>Email</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="producto : ${productos}">
-                    <td th:text="${producto.nombre}"></td>
-                    <td th:text="${producto.codigo}"></td>
-                    <td th:text="${producto.precio}"></td>
-                    <td th:text="${producto.existencia}"></td>
+                <tr th:each="proveedor : ${proveedor}">
+                    <td th:text="${proveedor.razonSocial}"></td>
                     <td>
-                        <a class="btn btn-warning" th:href="@{/productos/editar/} + ${producto.id}">Editar <i
+                        <div th:switch="${proveedor.tipoDocumento}">
+                            <p th:case="'1'">DNI</p>
+                            <p th:case="'2'">RUC</p>
+                        </div>
+                    </td>
+                    <td th:text="${proveedor.Documento}"></td>
+                    <td th:text="${proveedor.email}"></td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/proveedor/editar/} + ${proveedor.id}">Editar <i
                                 class="fa fa-edit"></i></a>
                     </td>
                     <td>
-                        <form th:action="@{/productos/eliminar}" method="post">
-                            <input type="hidden" name="id" th:value="${producto.id}"/>
+                        <form th:action="@{/proveedor/eliminar}" method="post">
+                            <input type="hidden" name="id" th:value="${proveedor.id}"/>
                             <button type="submit" class="btn btn-danger">Eliminar <i class="fa fa-trash"></i>
                             </button>
                         </form>

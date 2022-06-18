@@ -6,37 +6,45 @@
 <body>
 <main layout:fragment="contenido">
     <div class="col-12">
-        <h2>Productos</h2>
+        <h2>Usuarios</h2>
         <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
              th:text="${mensaje}"
              class="alert">
         </div>
-        <a class="btn btn-success mb-2" th:href="@{/productos/agregar}">Agregar</a>
+        <a class="btn btn-success mb-2" th:href="@{/usuarios/agregar}">Agregar</a>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Código</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Contraseña</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="producto : ${productos}">
-                    <td th:text="${producto.nombre}"></td>
-                    <td th:text="${producto.codigo}"></td>
-                    <td th:text="${producto.precio}"></td>
-                    <td th:text="${producto.existencia}"></td>
+                <tr th:each="usuario : ${usuario}">
+                    <td th:text="${usuario.nombre}"></td>
+                    <td th:text="${usuario.username}"></td>
+                    <td th:text="${usuario.email}"></td>
                     <td>
-                        <a class="btn btn-warning" th:href="@{/productos/editar/} + ${producto.id}">Editar <i
+                        <div th:switch="${usuario.rol}">
+                            <p th:case="'1'">Administrador</p>
+                            <p th:case="'2'">Vendedor</p>
+                            <p th:case="*">No Determinado</p>
+                        </div>
+                    </td>
+                    <td>***********</td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/usuarios/editar/} + ${usuario.id}">Editar <i
                                 class="fa fa-edit"></i></a>
                     </td>
                     <td>
-                        <form th:action="@{/productos/eliminar}" method="post">
-                            <input type="hidden" name="id" th:value="${producto.id}"/>
+                        <form th:action="@{/usuarios/eliminar}" method="post">
+                            <input type="hidden" name="id" th:value="${usuario.id}"/>
                             <button type="submit" class="btn btn-danger">Eliminar <i class="fa fa-trash"></i>
                             </button>
                         </form>

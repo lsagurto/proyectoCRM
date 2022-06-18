@@ -1,4 +1,4 @@
-package com.utp.venta;
+package com.utp.venta.Controladores;
 
 import com.utp.venta.Repository.VentasRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<body>
+<main layout:fragment="contenido">
+    <div class="col-12">
+        <h2>Editar Usuario </h2>
+        <form th:object="${usuario}" th:action="@{/usuarios/editar/} + ${usuario.id}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-group">
+                <label for="username">Nombre del usuario</label>
+                <input autocomplete="off" autofocus th:field="*{nombre}" id="nombre"
+                       placeholder="Escribe el nombre del usuarios" type="text"
+                       class="form-control" th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''">
+                <div class="invalid-feedback" th:errors="*{nombre}"></div>
+            </div>
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input autocomplete="off" th:field="*{username}" id="username" placeholder="Escribe el usuario"
+                       type="text"
+                       class="form-control" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+                <div class="invalid-feedback" th:errors="*{username}"></div>
+
+            </div>
+            <div class="form-group">
+                <label for="rol">Rol</label>
+                <select class="form-control" th:field="*{rol}" id="rol">
+                    <option value="1">Administrador</option>
+                    <option value="2">Vendedor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input autocomplete="off" th:field="*{password}" id="password" placeholder="password"
+                       type="text"
+                       class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                <div class="invalid-feedback" th:errors="*{password}"></div>
+
+            </div>
+            <button class="btn btn-success" type="submit">Guardar</button>
+            &nbsp;<a class="btn btn-warning" th:href="@{/usuarios/mostrar}">Ver todos</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

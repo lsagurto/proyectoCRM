@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<head></head>
+<body class="index">
+<main layout:fragment="contenido">
+    <div class="container mt-5" >
+        <div class="row ">
+            <div class="row">
+                <div class="col-sm float-left align-self-start">
+                                    <div class="card card-body" style="background-color: rgba(245, 245, 245, 0.4);">
+                    <!--                    <span th:if="${session.usuario != null}">Bienvenido&nbsp;<span class="font-italic" th:text="${session.usuario.nombre}"></span></span>-->
+                    <!--                    <label class="col-md-3">Nombre</label>-->
+
+                    <h1 class="text-white" th:if="${session.usuario != null}">Bienvenido&nbsp;</h1>
+                    <h1 class="text-white" th:text="${session.usuario.nombre}"></h1>
+                                    </div>
+                </div>
+                <div class="col-sm">
+
+                </div>
+                <div class="col-sm">
+                </div>
+            </div>
+        </div>
+</main>
+</body>
+</html>

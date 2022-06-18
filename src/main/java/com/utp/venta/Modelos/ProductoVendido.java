@@ -1,4 +1,6 @@
-package com.utp.venta;
+package com.utp.venta.Modelos;
+
+import com.utp.venta.Venta;
 
 import javax.persistence.*;
 

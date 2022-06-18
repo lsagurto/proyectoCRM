@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="layouts/encabezado :: encabezado">
+    <meta charset="UTF-8">
+    <title>Sistema Chirinos</title>
+</head>
+<body class="index">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div th:if="${param.error}" class="alert alert-danger mb-3">Crendenciales incorrectas</div>
+            <div class="card" style="background-color: rgba(245, 245, 245, 0.4);">
+                <div class="card-header">
+                    <h4>Iniciar Sesión</h4>
+                </div>
+                <div class="card-body">
+                    <form id="loginform" method="post" th:action="@{/auth/login-post}" role="form">
+                        <div class="row form-group">
+                            <label class="col-md-3">Usuario</label><input type="text" name="username" class="form-control col-md-7" />
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-md-3">Contraseña</label><input type="password" name="password" class="form-control col-md-7" />
+                        </div>
+                        <div class="row form-group">
+                           <input type="submit" class="btn btn-success btn-block col-md-7 offset-3" value="Continuar" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

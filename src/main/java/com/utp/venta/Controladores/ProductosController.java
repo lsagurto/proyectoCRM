@@ -1,5 +1,7 @@
-package com.utp.venta;
+package com.utp.venta.Controladores;
 
+import com.utp.venta.Modelos.Producto;
+import com.utp.venta.Repository.ProductosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

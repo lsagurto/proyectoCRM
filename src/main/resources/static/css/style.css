@@ -3,4 +3,47 @@ body {
     padding-top: 70px;
     /*Para la barra inferior fija*/
     padding-bottom: 70px;
+   /*   background: #f2f2f2;*/
+}
+.linea
+{
+    display: inline-block;
+}
+.index{
+ background-image: url("https://www.10wallpaper.com/wallpaper/1920x1080/1107/2003_Lamborghini_Gallardo_HD_Desktop_Wallpaper_08_1920x1080.jpg");
+  background-size: cover;
+          -moz-background-size: cover;
+          -webkit-background-size: cover;
+          -o-background-size: cover;
+}
+.navbar .nav-item:not(:last-child) {
+  margin-right: 35px;
+}
+
+.dropdown-toggle::after {
+   transition: transform 0.15s linear;
+}
+
+.show.dropdown .dropdown-toggle::after {
+  transform: translateY(3px);
+}
+
+.dropdown-menu {
+  margin-top: 0;
+}
+
+.navbar .nav-item:not(:last-child) {
+  margin-right: 35px;
+}
+
+.dropdown-toggle::after {
+   transition: transform 0.15s linear;
+}
+
+.show.dropdown .dropdown-toggle::after {
+  transform: translateY(3px);
+}
+
+.dropdown-menu {
+  margin-top: 0;
 }

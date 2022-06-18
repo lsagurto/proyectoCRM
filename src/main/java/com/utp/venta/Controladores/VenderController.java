@@ -1,12 +1,12 @@
-package com.utp.venta;
+package com.utp.venta.Controladores;
 
 import com.utp.venta.Modelos.Producto;
-import com.utp.venta.Modelos.ProductoVendido;
-import com.utp.venta.Venta;
-import com.utp.venta.Repository.ProductosRepository;
-import com.utp.venta.Repository.ProductosVendidosRepository;
-import com.utp.venta.Repository.VentasRepository;
 import com.utp.venta.ProductoParaVender;
+import com.utp.venta.Modelos.ProductoVendido;
+import com.utp.venta.Repository.ProductosVendidosRepository;
+import com.utp.venta.Repository.ProductosRepository;
+import com.utp.venta.Repository.VentasRepository;
+import com.utp.venta.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,6 +99,14 @@ public class VenderController {
         return carrito;
     }
 
+    private ArrayList<ProductoParaVender> obtenerCarrito2(HttpServletRequest request) {
+        ArrayList<ProductoParaVender> carrito = (ArrayList<ProductoParaVender>) request.getSession().getAttribute("carrito");
+        if (carrito == null) {
+            carrito = new ArrayList<>();
+        }
+        return carrito;
+    }
+
     private void guardarCarrito(ArrayList<ProductoParaVender> carrito, HttpServletRequest request) {
         request.getSession().setAttribute("carrito", carrito);
     }
@@ -123,6 +131,68 @@ public class VenderController {
         for (ProductoParaVender productoParaVenderActual : carrito) {
             if (productoParaVenderActual.getCodigo().equals(productoBuscadoPorCodigo.getCodigo())) {
                 productoParaVenderActual.aumentarCantidad();
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            carrito.add(new ProductoParaVender(productoBuscadoPorCodigo.getNombre(), productoBuscadoPorCodigo.getCodigo(), productoBuscadoPorCodigo.getPrecio(), productoBuscadoPorCodigo.getExistencia(), productoBuscadoPorCodigo.getId(), 1f));
+        }
+        this.guardarCarrito(carrito, request);
+        return "redirect:/vender/";
+    }
+
+
+    @PostMapping(value = "/agregar2/{indice}")
+    public String agregarAlCarrito2(@PathVariable int indice, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+        ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
+        Producto productoBuscadoPorCodigo = productosRepository.findFirstByCodigo(String.valueOf(indice));
+        if (productoBuscadoPorCodigo == null) {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "El producto con el código " + producto.getCodigo() + " no existe")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/vender/";
+        }
+        if (productoBuscadoPorCodigo.sinExistencia()) {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "El producto está agotado")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/vender/";
+        }
+        boolean encontrado = false;
+        for (ProductoParaVender productoParaVenderActual : carrito) {
+            if (productoParaVenderActual.getCodigo().equals(productoBuscadoPorCodigo.getCodigo())) {
+                productoParaVenderActual.aumentarCantidad();
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            carrito.add(new ProductoParaVender(productoBuscadoPorCodigo.getNombre(), productoBuscadoPorCodigo.getCodigo(), productoBuscadoPorCodigo.getPrecio(), productoBuscadoPorCodigo.getExistencia(), productoBuscadoPorCodigo.getId(), 1f));
+        }
+        this.guardarCarrito(carrito, request);
+        return "redirect:/vender/";
+    }
+    @PostMapping(value = "/agregar3/{indice}")
+    public String agregarAlCarrito3(@PathVariable int indice, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+        ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
+        Producto productoBuscadoPorCodigo = productosRepository.findFirstByCodigo(String.valueOf(indice));
+        if (productoBuscadoPorCodigo == null) {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "El producto con el código " + producto.getCodigo() + " no existe")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/vender/";
+        }
+        if (productoBuscadoPorCodigo.sinExistencia()) {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "El producto está agotado")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/vender/";
+        }
+        boolean encontrado = false;
+        for (ProductoParaVender productoParaVenderActual : carrito) {
+            if (productoParaVenderActual.getCodigo().equals(productoBuscadoPorCodigo.getCodigo())) {
+                productoParaVenderActual.aumentarCantidad2();
                 encontrado = true;
                 break;
             }

@@ -1,4 +1,4 @@
-package com.utp.venta;
+package com.utp.venta.Modelos;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

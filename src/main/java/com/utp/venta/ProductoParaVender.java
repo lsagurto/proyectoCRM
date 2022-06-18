@@ -19,6 +19,10 @@ public class ProductoParaVender extends Producto {
         this.cantidad++;
     }
 
+    public void aumentarCantidad2() {
+        this.cantidad--;
+    }
+
     public Float getCantidad() {
         return cantidad;
     }

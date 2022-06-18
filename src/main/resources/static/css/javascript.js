@@ -1,15 +1,4 @@
-<!doctype html>
-
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="layouts/encabezado :: encabezado"></head>
-<body>
-<nav th:replace="layouts/navbar :: navbar"></nav>
-<main layout:fragment="contenido" role="main" class="container"></main>
-<footer th:replace="layouts/pie :: pie"></footer>
-<link th:href="@{/css/javascript.js}" rel="text/javascript">
-</body>
-<script type="text/javascript">
-        const $dropdown = $(".dropdown");
+const $dropdown = $(".dropdown");
 const $dropdownToggle = $(".dropdown-toggle");
 const $dropdownMenu = $(".dropdown-menu");
 const showClass = "show";
@@ -34,5 +23,3 @@ $(window).on("load resize", function() {
     $dropdown.off("mouseenter mouseleave");
   }
 });
-    </script>
-</html>
