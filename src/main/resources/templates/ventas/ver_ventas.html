@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="master">
@@ -6,23 +7,24 @@
 <main layout:fragment="contenido">
     <div class="col-12">
         <h2>Ventas</h2>
+        &nbsp;
         <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
              th:text="${mensaje}"
              class="alert">
         </div>
-        <a class="btn btn-success mb-2" th:href="@{/vender/}">Agregar</a>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>Fecha</th>
+                    <th>Datos Generales</th>
                     <th>Total</th>
                     <th>Productos</th>
+                    <th>Descargar</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="venta : ${ventas}">
-                    <td th:text="${venta.fechaYHora}"></td>
+                    <td><h6 th:text="'Cliente: '+${venta.nombre}"></h6><p><h6 th:text="'Vendedor: '+${venta.vendedor}"></h6><p><h6 th:text="'Fecha: '+${venta.fechaYHora}"></h6></td>
                     <td th:text="${venta.total}"></td>
                     <td>
                         <table class="table table-bordered">
@@ -46,10 +48,15 @@
                             </tbody>
                         </table>
                     </td>
+                    <td>
+                        <a class="btn btn-primary" th:href="@{/ventas/PDF}">Comprobante <i
+                                class="fa fa-edit"></i></a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <a class="btn btn-success mb-2" th:href="@{/vender/}">Agregar</a>
     </div>
 </main>
 </body>

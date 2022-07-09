@@ -5,15 +5,60 @@
 <body>
 <main layout:fragment="contenido">
     <div class="col-12">
-        <h2>Vender</h2>
         <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
              th:text="${mensaje}"
              class="alert">
         </div>
+        <h2>Datos de cliente</h2>
+        <form th:object="${carritoCliente}" th:action="@{/vender/agregarCliente}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-3" >
+                    <label for="tipoDocumento">Tipo Documento</label>
+                    <select class="form-control" th:field="*{tipoDocumento}" id="tipoDocumento">
+                        <option value="1">DNI</option>
+                        <option value="2">RUC</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="numeroDocumento">Número documento</label>
+                    <input autocomplete="off" th:field="*{numeroDocumento}" id="numeroDocumento"
+                           placeholder="Número documento"
+                           type="text"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('numeroDocumento')} ? 'is-invalid' : ''">
+                    <div class="invalid-feedback" th:errors="*{numeroDocumento}"></div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Nombre del cliente</label>
+                    <label autocomplete="off" th:text="*{nombre}" id="nombre"
+                           placeholder="Nombre del cliente" type="text"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"></label>
+                    <div class="invalid-feedback" th:errors="*{nombre}"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Dirección</label>
+                    <label type="text" class="form-control" placeholder="Av. Perú #233" th:text="*{direccion}"
+                           id="direccion"></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="Vendedor">Vendedor</label>
+                    <label type="text" class="form-control" th:text="*{vendedor}" id="vendedor"></label>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="fechaEmision">Fecha Emisión</label>
+                    <label type="text" class="form-control" th:text="*{fechaEmision}" id="fechaEmision"></label>
+                </div>
+            </div>
+        </form>
+        <h2>Listado de productos</h2>
+
         <form th:object="${producto}" th:action="@{/vender/agregar}" method="post">
             <div class="form-group">
                 <label for="codigo">Código de barras</label>
-                <input autofocus autocomplete="off" th:field="*{codigo}" id="codigo"
+                <input autocomplete="off" th:field="*{codigo}" id="codigo"
                        placeholder="Escanea el código o escríbelo y presiona Enter"
                        type="text"
                        class="form-control" th:classappend="${#fields.hasErrors('codigo')} ? 'is-invalid' : ''">
@@ -21,14 +66,8 @@
 
             </div>
         </form>
-        <form class="mb-2" th:action="@{/vender/terminar}" method="post">
-            <button type="submit" class="btn btn-success">Terminar&nbsp;<i class="fa fa-check"></i>
-            </button>
-            <a th:href="@{/vender/limpiar}" class="btn btn-danger">Cancelar venta&nbsp;<i
-                    class="fa fa-trash"></i>
-            </a>
-        </form>
-        <h1 th:text="${'Total: ' + total}"></h1>
+
+
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -36,7 +75,9 @@
                     <th>Nombre</th>
                     <th>Código</th>
                     <th>Precio</th>
-                    <th> <div class="container">Cantidad</div></th>
+                    <th>
+                        <div class="container">Cantidad</div>
+                    </th>
                     <th>Total</th>
                     <th>Quitar de lista</th>
                 </tr>
@@ -85,6 +126,14 @@
                 </tbody>
             </table>
         </div>
+        <h1 th:text="${'Total: ' + total}"></h1>
+        <form class="mb-2" th:action="@{/vender/terminar}" method="post">
+            <button type="submit" class="btn btn-success">Terminar&nbsp;<i class="fa fa-check"></i>
+            </button>
+            <a th:href="@{/vender/limpiar}" class="btn btn-danger">Cancelar venta&nbsp;<i
+                    class="fa fa-trash"></i>
+            </a>
+        </form>
     </div>
 </main>
 </body>

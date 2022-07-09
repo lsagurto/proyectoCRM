@@ -49,6 +49,7 @@ public class UsuariosController {
     @PostMapping(value = "/editar/{id}")
     public String actualizarUsuario(@ModelAttribute @Valid Usuario usuario, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
         if (bindingResult.hasErrors()) {
+
             if (usuario.getId() != null) {
                 return "usuarios/editar_usuario";
             }
@@ -72,9 +73,12 @@ public class UsuariosController {
 
     @GetMapping(value = "/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable int id, Model model) {
-        model.addAttribute("usuario", usuariosRepository.findById(id).orElse(null));
+        Usuario user = usuariosRepository.findById(id).orElse(null);
+        user.setPassword("****************");
+        model.addAttribute("usuario", user);
         return "usuarios/editar_usuario";
     }
+
 
     @PostMapping(value = "/agregar")
     public String guardarUsuario(@ModelAttribute @Valid Usuario usuario, BindingResult bindingResult, RedirectAttributes redirectAttrs) {

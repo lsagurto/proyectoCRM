@@ -14,7 +14,9 @@ public class ProductoParaVender extends Producto {
         super(nombre, codigo, precio, existencia);
         this.cantidad = cantidad;
     }
+    public ProductoParaVender(){
 
+    }
     public void aumentarCantidad() {
         this.cantidad++;
     }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<body>
+<main layout:fragment="contenido">
+    <div class="col-12">
+        &nbsp;
+        <h2>Resúmenes de ventas (Cliente x Monto de venta)</h2>
+        &nbsp;
+        <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+
+        <div class="table-responsive">
+            <table  id="example" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Vendedor</th>
+                    <th>Monto Total</th>
+                    <th>Fecha</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="venta : ${ventas}">
+                    <td th:text="${venta.nombre}"></td>
+                    <td th:text="${venta.vendedor}"></td>
+                    <td th:text="${venta.total}"></td>
+                    <td th:text="${venta.fechaYHora}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-lg-12">-->
+<!--                    <div class="table-responsive">-->
+<!--                        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Nombre</th>-->
+<!--                                <th>Puesto</th>-->
+<!--                                <th>Ciudad</th>-->
+<!--                                <th>Año de Ingreso</th>-->
+<!--                                <th>Salario</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>Tiger Nixon</td>-->
+<!--                                <td>Arquitecto</td>-->
+<!--                                <td>Edinburgh</td>-->
+<!--                                <td>2011/04/25</td>-->
+<!--                                <td>$320,800</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Garrett Winters</td>-->
+<!--                                <td>Contador</td>-->
+<!--                                <td>Tokyo</td>-->
+<!--                                <td>2011/07/25</td>-->
+<!--                                <td>$170,750</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Cedric Kelly</td>-->
+<!--                                <td>Senior Javascript Developer</td>-->
+<!--                                <td>Edinburgh</td>-->
+<!--                                <td>2012/03/29</td>-->
+<!--                                <td>$433,060</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Jonas Alexander</td>-->
+<!--                                <td>Developer</td>-->
+<!--                                <td>San Francisco</td>-->
+<!--                                <td>2010/07/14</td>-->
+<!--                                <td>$86,500</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <a class="btn btn-success mb-2" th:href="@{/vender/}">Agregar</a>
+    </div>
+</main>
+</body>
+</html>

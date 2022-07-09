@@ -11,10 +11,54 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String fechaYHora;
+    private Integer IDCliente;
+    private String Nombre;
+    private String vendedor;
+    private Integer IDUsuario;
+    public Integer getIDCliente() {
+        return IDCliente;
+    }
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNumeroDocumento(String Nombre) {
+        this.Nombre = Nombre;
+    }
+
+    public String getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
+    }
+
+
+
+    public void setIDCliente(Integer IDCliente) {
+        this.IDCliente = IDCliente;
+    }
+
+    public Integer getIDUsuario() {
+        return IDUsuario;
+    }
+
+    public void setIDUsuario(Integer IDUsuario) {
+        this.IDUsuario = IDUsuario;
+    }
+
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     private Set<ProductoVendido> productos;
 
+    public Venta(Integer IDCliente, Integer idUsuario, String Nombre, String vendedor ) {
+        this.fechaYHora = Utiles.obtenerFechaYHoraActual();
+        this.IDCliente = IDCliente;
+        this.IDUsuario = idUsuario;
+        this.Nombre = Nombre;
+        this.vendedor = vendedor;
+    }
     public Venta() {
         this.fechaYHora = Utiles.obtenerFechaYHoraActual();
     }
@@ -48,6 +92,10 @@ public class Venta {
     }
 
     public void setProductos(Set<ProductoVendido> productos) {
+        this.productos = productos;
+    }
+
+    public void setDatosCliente(Set<ProductoVendido> productos) {
         this.productos = productos;
     }
 }

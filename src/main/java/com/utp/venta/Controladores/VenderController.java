@@ -1,19 +1,19 @@
 package com.utp.venta.Controladores;
 
-import com.utp.venta.Modelos.Producto;
+import com.utp.venta.ClienteParaVender;
+import com.utp.venta.Modelos.*;
 import com.utp.venta.ProductoParaVender;
-import com.utp.venta.Modelos.ProductoVendido;
-import com.utp.venta.Repository.ProductosVendidosRepository;
-import com.utp.venta.Repository.ProductosRepository;
-import com.utp.venta.Repository.VentasRepository;
+import com.utp.venta.Repository.*;
 import com.utp.venta.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Controller
@@ -26,6 +26,11 @@ public class VenderController {
     @Autowired
     private ProductosVendidosRepository productosVendidosRepository;
 
+    @Autowired
+    private UsuarioRepository usuariosRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     @PostMapping(value = "/quitar/{indice}")
     public String quitarDelCarrito(@PathVariable int indice, HttpServletRequest request) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
@@ -35,6 +40,9 @@ public class VenderController {
         }
         return "redirect:/vender/";
     }
+
+    //@PostMapping(value = "/quitarCliente")
+    //public String quitarCliente(this)
 
     private void limpiarCarrito(HttpServletRequest request) {
         this.guardarCarrito(new ArrayList<>(), request);
@@ -50,13 +58,16 @@ public class VenderController {
     }
 
     @PostMapping(value = "/terminar")
-    public String terminarVenta(HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String terminarVenta(@ModelAttribute Cliente cliente, @ModelAttribute Usuarios usuarios, HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
         // Si no hay carrito o está vacío, regresamos inmediatamente
+        ClienteParaVender carritoCliente = this.obtenerCliente(request);
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
+        Cliente clienteBuscadoPorCodigo = clienteRepository.findByNumeroDocumento(carritoCliente.getNumeroDocumento());
         if (carrito == null || carrito.size() <= 0) {
             return "redirect:/vender/";
         }
-        Venta v = ventasRepository.save(new Venta());
+        Venta v = ventasRepository.save(new Venta(carritoCliente.getId(),carritoCliente.getIdVendedor(),clienteBuscadoPorCodigo.getNombre(),usuarioBuscadoPorCodigo.getUsername()));
         // Recorrer el carrito
         for (ProductoParaVender productoParaVender : carrito) {
             // Obtener el producto fresco desde la base de datos
@@ -84,10 +95,14 @@ public class VenderController {
     @GetMapping(value = "/")
     public String interfazVender(Model model, HttpServletRequest request) {
         model.addAttribute("producto", new Producto());
+        // --
+        model.addAttribute("carritoCliente", new ProductoParaVender());
         float total = 0;
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
+        ClienteParaVender carritoCliente = this.obtenerCliente(request);
         for (ProductoParaVender p: carrito) total += p.getTotal();
         model.addAttribute("total", total);
+        model.addAttribute("carritoCliente",carritoCliente);
         return "vender/vender";
     }
 
@@ -99,16 +114,61 @@ public class VenderController {
         return carrito;
     }
 
-    private ArrayList<ProductoParaVender> obtenerCarrito2(HttpServletRequest request) {
-        ArrayList<ProductoParaVender> carrito = (ArrayList<ProductoParaVender>) request.getSession().getAttribute("carrito");
-        if (carrito == null) {
-            carrito = new ArrayList<>();
+    private ClienteParaVender obtenerCliente(HttpServletRequest request) {
+        ClienteParaVender clienteVenta = (ClienteParaVender) request.getSession().getAttribute("carritoCliente");
+        if (clienteVenta == null) {
+            clienteVenta = new ClienteParaVender(null,null,null,null,null,null,null,null,null);
         }
-        return carrito;
+        return clienteVenta;
     }
-
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
     private void guardarCarrito(ArrayList<ProductoParaVender> carrito, HttpServletRequest request) {
         request.getSession().setAttribute("carrito", carrito);
+    }
+    private void guardarCliente(ClienteParaVender carritoCliente, HttpServletRequest request) {
+        request.getSession().setAttribute("carritoCliente", carritoCliente);
+    }
+
+    @PostMapping(value = "/agregarCliente")
+    public String agregarCliente(@ModelAttribute Cliente cliente, @ModelAttribute Usuarios usuarios, BindingResult bindingResult, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+        ClienteParaVender carritoCliente = this.obtenerCliente(request);
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
+        Cliente clienteBuscadoPorCodigo = clienteRepository.findByNumeroDocumento(cliente.getNumeroDocumento());
+        boolean encontrado = false;
+        if (clienteBuscadoPorCodigo == null) {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "El cliente no existe")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/vender/";
+        }
+        else
+        {
+            encontrado = true;
+        }
+
+        if (!encontrado) {
+          //  carritoCliente.add(new ClienteParaVender(clienteBuscadoPorCodigo.getId(),clienteBuscadoPorCodigo.getNombre(),clienteBuscadoPorCodigo.getTipoDocumento(),clienteBuscadoPorCodigo.getNumeroDocumento()));
+
+         //   carritoCliente.add(new ClienteParaVender(clienteBuscadoPorCodigo.getId(),clienteBuscadoPorCodigo.getNombre(),clienteBuscadoPorCodigo.getEmail(),clienteBuscadoPorCodigo.getDireccion(),clienteBuscadoPorCodigo.getTelefono(),clienteBuscadoPorCodigo.getNumeroDocumento(),clienteBuscadoPorCodigo.getTipoDocumento()));
+        }
+        carritoCliente.setNumeroDocumento(clienteBuscadoPorCodigo.getNumeroDocumento());
+        carritoCliente.setDireccion(clienteBuscadoPorCodigo.getDireccion());
+        carritoCliente.setEmail(clienteBuscadoPorCodigo.getDireccion());
+        carritoCliente.setTipoDocumento(clienteBuscadoPorCodigo.getTipoDocumento());
+        carritoCliente.setNombre(clienteBuscadoPorCodigo.getNombre());
+        carritoCliente.setTelefono(clienteBuscadoPorCodigo.getTelefono());
+        carritoCliente.setId(clienteBuscadoPorCodigo.getId());
+        carritoCliente.setVendedor(usuarioBuscadoPorCodigo.getUsername());
+        carritoCliente.setIdVendedor(usuarioBuscadoPorCodigo.getId());
+        carritoCliente.setFechaEmision(LocalDate.now().toString());
+        this.guardarCliente(carritoCliente,request);
+        return "redirect:/vender/";
     }
 
     @PostMapping(value = "/agregar")
