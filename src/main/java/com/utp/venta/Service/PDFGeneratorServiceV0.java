@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
-public class PDFGeneratorService {
+public class PDFGeneratorServiceV0 {
     public void export(HttpServletResponse reponse, String test) throws IOException{
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, reponse.getOutputStream());

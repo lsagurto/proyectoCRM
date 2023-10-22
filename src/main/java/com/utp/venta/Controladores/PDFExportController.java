@@ -1,6 +1,6 @@
 package com.utp.venta.Controladores;
 
-import com.utp.venta.Service.PDFGeneratorService;
+import com.utp.venta.Service.PDFGeneratorServiceV0;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -11,9 +11,9 @@ import java.util.Date;
 
 @Controller
 public class PDFExportController {
-    private final PDFGeneratorService pdfGeneratorService;
+    private final PDFGeneratorServiceV0 pdfGeneratorService;
 
-    public PDFExportController(PDFGeneratorService pdfGeneratorService) {
+    public PDFExportController(PDFGeneratorServiceV0 pdfGeneratorService) {
         this.pdfGeneratorService = pdfGeneratorService;
     }
 

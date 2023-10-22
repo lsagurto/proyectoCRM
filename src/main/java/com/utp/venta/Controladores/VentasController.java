@@ -3,7 +3,7 @@ package com.utp.venta.Controladores;
 import com.utp.venta.Repository.ClienteRepository;
 import com.utp.venta.Repository.UsuarioRepository;
 import com.utp.venta.Repository.VentasRepository;
-import com.utp.venta.Service.PDFGeneratorService;
+import com.utp.venta.Service.PDFGeneratorServiceV0;
 import com.utp.venta.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,8 +27,8 @@ public class VentasController {
     private UsuarioRepository usuariosRepository;
     @Autowired
     private ClienteRepository clienteRepository;
-    private final PDFGeneratorService pdfGeneratorService;
-    public VentasController(PDFGeneratorService pdfGeneratorService) {
+    private final PDFGeneratorServiceV0 pdfGeneratorService;
+    public VentasController(PDFGeneratorServiceV0 pdfGeneratorService) {
         this.pdfGeneratorService = pdfGeneratorService;
     }
 
