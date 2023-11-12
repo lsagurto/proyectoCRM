@@ -1,6 +1,8 @@
 package com.utp.venta.Controladores;
 
 import com.utp.venta.Modelos.Cliente;
+import com.utp.venta.Modelos.Usuario;
+import com.utp.venta.Repository.UsuarioRepository;
 import com.utp.venta.Repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping(path = "/cliente")
@@ -18,16 +22,34 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private UsuarioRepository usuariosRepository;
+
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
 
     @GetMapping(value = "/agregar")
     public String agregarcliente(Model model) {
         model.addAttribute("cliente", new Cliente());
+
         return "cliente/agregar_cliente";
     }
 
     @GetMapping(value = "/mostrar")
-    public String mostrarCliente(Model model) {
-        model.addAttribute("cliente", clienteRepository.findAll());
+    public String mostrarCliente(Model model,  HttpServletRequest request ){
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
+        if(usuarioBuscadoPorCodigo.getRol() != 1) {
+            model.addAttribute("cliente", clienteRepository.findByIdUsuario(usuarioBuscadoPorCodigo.getId()));
+        }
+        else
+        {
+            model.addAttribute("cliente", clienteRepository.findAll());
+        }
         return "cliente/ver_cliente";
     }
 
@@ -75,7 +97,7 @@ public class ClienteController {
     }
 
     @PostMapping(value = "/agregar")
-    public String guardarCliente(@ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String guardarCliente(@ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "cliente/agregar_cliente";
         }
@@ -87,7 +109,9 @@ public class ClienteController {
         }
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")
-                .addFlashAttribute("clase", "success");
+                .addFlashAttribute("clasxe", "success");
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
+        cliente.setidUsuario(usuarioBuscadoPorCodigo.getId());
         clienteRepository.save(cliente);
         return "redirect:/cliente/agregar";
     }

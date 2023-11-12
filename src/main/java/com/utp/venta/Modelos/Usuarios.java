@@ -28,6 +28,7 @@ public class Usuarios {
     @Min(value = 0, message ="El usuario debe medir entre 1 y 50")
     private String usuario;
 
+
     @NotNull(message = "Debes especificar la contraseña")
     @Min(value = 0, message = "La contraseña debe medir entre 1 y 50")
     private String pass;

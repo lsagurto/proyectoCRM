@@ -10,4 +10,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
    //public Usuario findFirstByUsuario(String usuario);
     public Cliente findByNumeroDocumento (String numeroDocumento);
     public Cliente findById (String id);
+
+
+    public Cliente findByIdUsuario (Integer IdUsuario);
 }

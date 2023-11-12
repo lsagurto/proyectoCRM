@@ -68,7 +68,14 @@ public class Cliente implements Serializable {
         this.tipoDocumento = tipoDocumento;
     }
 
-    public Cliente(Integer id, String nombre, String email, String direccion, String telefono, String numeroDocumento, String tipoDocumento) {
+    public Integer getidUsuario() {
+        return idUsuario;
+    }
+
+    public void setidUsuario(Integer idUsuario) {
+       this.idUsuario = idUsuario;
+    }
+    public Cliente(Integer id, String nombre, String email, String direccion, String telefono, String numeroDocumento, String tipoDocumento, Integer idUsuario) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -76,14 +83,16 @@ public class Cliente implements Serializable {
         this.telefono = telefono;
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
+        this.idUsuario = idUsuario;
     }
-    public Cliente(String nombre, String email, String direccion, String telefono, String numeroDocumento, String tipoDocumento) {
+    public Cliente(String nombre, String email, String direccion, String telefono, String numeroDocumento, String tipoDocumento, Integer idUsuario) {
         this.nombre = nombre;
         this.email = email;
         this.direccion = direccion;
         this.telefono = telefono;
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
+        this.idUsuario = idUsuario;
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,4 +122,5 @@ public class Cliente implements Serializable {
     @Min(value = 0, message = "El tipo documento debe medir entre 1 y 50")
     private String tipoDocumento;
 
+    private Integer idUsuario;
 }
