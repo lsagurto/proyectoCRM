@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<head>
+
+</head>
+<body>
+
+<main layout:fragment="contenido">
+    <div class="col-12">
+        <h2>Agregar lead</h2>
+        <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+        <form th:object="${lead}" th:action="@{/lead/save}" method="post" onsubmit="return validateForm();">
+            <div class="form-group">
+                <label for="asunto_lead">Asunto del lead</label>
+                <input autocomplete="off" autofocus th:field="*{asunto_lead}" id="asunto_lead"
+                       placeholder="Escribe el asunto del lead" type="text"
+                       class="form-control" th:classappend="${#fields.hasErrors('asunto_lead')} ? 'is-invalid' : ''" required
+                       title="Debes completar este campo">
+                <div class="invalid-feedback" th:errors="*{asunto_lead}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="cliente">Cliente</label>
+                <select th:field="*{cliente}" id="cliente" class="form-control" required>
+                    <option value="">Selecciona un cliente</option>
+                    <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nombre}"></option>
+
+                </select>
+            </div>
+
+            <button class="btn btn-success" type="submit">Guardar</button>
+            &nbsp;<a class="btn btn-warning" th:href="@{/lead/show}">Ver todos</a>
+            <button class="btn btn-success" type="submit" th:if="${lead.estado == 'En fase de negocio'}">Convertir en oportunidad</button>
+
+        </form>
+    </div>
+
+</main>
+
+
+</body>
+</html>

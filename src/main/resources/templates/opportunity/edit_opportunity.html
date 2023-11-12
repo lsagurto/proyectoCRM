@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<head>
+  <style id="custom-styles">
+        .btn-opportinity{
+                background: #222F54;
+                border-color: #222F54;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="contenido">
+  <div class="col-12">
+    <h2>Editar oportunidad </h2>
+    <form th:object="${opportunity}" th:action="@{/opportunity/editar/} + ${opportunity.id}" method="post">
+      <input type="hidden" th:field="*{id}">
+      <div class="form-group">
+        <label for="asunto">Asunto de la oportunidad</label>
+        <input autocomplete="off" autofocus th:field="*{asunto}" id="asunto"
+               placeholder="Escribe el asunto de la oportunidad" type="text"
+               class="form-control" th:classappend="${#fields.hasErrors('asunto')} ? 'is-invalid' : ''">
+        <div class="invalid-feedback" th:errors="*{asunto}"></div>
+      </div>
+      <div class="form-group">
+        <label for="estado">Estado</label>
+        <select class="form-control" th:field="*{estado}" id="estado">
+          <option value="En proceso">En proceso</option>
+          <option value="Ganada">Ganada</option>
+          <option value="Perdida">Perdida</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="estado">Cliente</label>
+        <select class="form-control" th:field="*{cliente}" id="cliente">
+          <option value="">Selecciona un cliente</option>
+          <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nombre}" th:selected="${c.id == cliente.id}"></option>
+        </select>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <div>
+          <button class="btn btn-success" type="submit">Guardar</button>
+          &nbsp;<a class="btn btn-warning" th:href="@{/opportunity/show}">Ver todos</a>
+        </div>
+
+
+
+      </div>
+
+    </form>
+
+
+  </div>
+</main>
+
+<script th:src="@{/js/prueba.js}" type="text/javascript">
+</script>
+</body>
+</html>

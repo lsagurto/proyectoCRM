@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master" xmlns="http://www.w3.org/1999/html">
+<head>
+
+</head>
+<body>
+
+<main layout:fragment="contenido">
+    <div class="col-12">
+        <h2>Agregar actividad</h2>
+        <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+        <form th:object="${actividad}" th:action="@{/actividad/save/} + ${opportunity.id}" method="post" onsubmit="return validateForm();">
+            <input type="hidden" th:object="${opportunity}" id="opportunityId" th:field="*{id}" />
+
+
+            <div class="form-group">
+                <label for="asunto_actividad">Asunto de la actividad</label>
+                <input autocomplete="off" autofocus th:field="*{asunto_actividad}" id="asunto_actividad"
+                       placeholder="Escribe el asunto de la actividad" type="text"
+                       class="form-control" th:classappend="${#fields.hasErrors('asunto_actividad')} ? 'is-invalid' : ''" required
+                       title="Debes completar este campo">
+                <div class="invalid-feedback" th:errors="*{asunto_actividad}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="tipoActividad">Tipo de actividad</label>
+                <select th:field="*{tipoActividad}" class="form-control" id="tipoActividad" required>
+                    <option value="">Selecciona un tipo de actividad</option>
+                    <option th:each="tipo : ${tipoActividadList}" th:value="${tipo.id}" th:text="${tipo.nombre}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="note_activity">Notas</label>
+                <textarea autofocus th:field="*{note_activity}" id="note_activity"
+                       class="form-control" th:classappend="${#fields.hasErrors('note_activity')} ? 'is-invalid' : ''" required
+                       title="Debes completar este campo">
+                </textarea>
+                <div class="invalid-feedback" th:errors="*{note_activity}"></div>
+            </div>
+
+            <button class="btn btn-success" type="submit">Guardar</button>
+            &nbsp;<a class="btn btn-warning" th:object="${opportunity}" th:href="@{/opportunity/detail_opportunity/} + ${opportunity.id}">Ver todos</a>
+
+
+        </form>
+    </div>
+
+</main>
+
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<main layout:fragment="contenido">
+    <div class="col-12">
+        <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+        <h2>Oportunidad</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Asunto</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Total Bruto</th>
+                    <th>Total Neto</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="op : ${opportunity}">
+                    <td th:text="${op.asunto}"></td>
+                    <td th:text="${op.cliente.nombre}"></td>
+                    <td th:text="${op.estado}"></td>
+                    <td th:text="${totalBruto}"></td>
+                    <td th:text="${totalNeto}"></td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <div class="col-12" >
+        <h2>Producto</h2>
+        <form th:if="${opportunity.estado != 'Ganada'}" th:object="${producto}" th:action="@{'/productos/save_in_opportunity/' + ${opportunity.id}}" method="post" onsubmit="return validateForm();">
+
+            <div class="form-group">
+                <label for="id">Producto</label>
+                <select th:field="*{id}" id="id" class="form-control" required>
+                    <option value="">Selecciona un producto</option>
+                    <option th:each="p : ${productos_list}" th:value="${p.id}" th:text="${p.nombre}">
+
+                    </option>
+
+                </select>
+            </div>
+            <button class="btn btn-success mb-2" type="submit" >Agregar producto</button>
+
+        </form>
+
+        <form th:if="${session.carrito_product != null and session.carrito_product.size() > 0}" class="form-finish-sale" th:object="${producto}" th:action="@{'/productos/finish_sale/' + ${opportunity.id}}" method="post">
+            <button class="btn btn-primary mb-2 btn-finish" type="submit" >Terminar venta</button>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Ingreso</th>
+                    <th>Ingreso (con igv)</th>
+                    <th>Editar</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="producto, iterador : ${productosCombinados}">
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.precio}"></td>
+                    <td>
+                        <div class="container">
+                            <div class="row">
+                                <div class=".col-">
+                                    <input type="text" readonly class="form-control input-sm" name="nombre[]"
+                                           th:value="${producto.cantidad}"
+                                           style="width:60px;" id="nombre1"/>
+                                </div>
+                                <div class=".col-">
+                                    &nbsp;
+                                </div>
+                                <div class=".col-">
+                                    <form th:action="@{'/productos/agregar2/' + ${producto.codigo} + '/' + ${opportunity.id}} " method="post">
+                                        <button type="submit" class="btn btn-info btn-sm linea" th:if="${opportunity.estado != 'Ganada'}"><i
+                                                class="fa fa-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class=".col-">
+                                    <form th:action="@{'/productos/agregar3/' + ${producto.codigo} + '/' + ${opportunity.id}} " method="post">
+                                        <button type="submit" class="btn btn-warning btn-sm linea" th:if="${opportunity.estado != 'Ganada'}"><i
+                                                class="fa fa-minus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:text="${producto.total}"></td>
+                    <td th:text="${producto.ingresoConIGV}"></td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/productos/edit_product/} + ${producto.id}">Editar <i
+                                class="fa fa-edit"></i></a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-12" >
+        <h2>Actividad</h2>
+        <a class="btn btn-success mb-2" th:object="${opportunity}" th:href="@{'/actividad/add/' + ${opportunity.id}}">Agregar actividad</a>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Asunto</th>
+                    <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Notas de actividad</th>
+                    <th>Opciones</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="act : ${actividades}">
+                    <td th:text="${act.asunto_actividad}"></td>
+                    <td th:text="${act.estado}"></td>
+                    <td th:text="${act.cliente.nombre}"></td>
+                    <td th:text="${act.note_activity}"></td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/actividad/editar/} + ${act.id}">Editar <i
+                                class="fa fa-edit"></i></a>
+                    </td>
+
+                </tr>
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+    <!--<div class="col-12" >
+        <h2>Cotización</h2>
+        <a class="btn btn-success mb-2" th:object="${opportunity}" th:href="@{'/cotizacion/add/' + ${opportunity.id}}">Agregar cotización</a>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Asunto</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Editar</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="cot : ${cotizacion}">
+                    <td th:text="${cot.asunto_cotizacion}"></td>
+                    <td th:text="${cot.fecha_inicio}"></td>
+                    <td th:text="${cot.fecha_fin}"></td>
+
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/cotizacion/edit_cotizacion/} + ${cot.id}">Editar <i
+                                class="fa fa-edit"></i></a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>-->
+
+    <div class="col-12" th:if="${opportunity.estado == 'Ganada'}">
+        <td>
+            <a class="btn btn-primary" th:href="@{/opportunity/PDF(opportunityId=${opportunity.id}, productIds=${productoIds})}">Generar Cotización<i
+                    class="fa fa-edit"></i></a>
+        </td>
+    </div>
+</main>
+
+</body>
+</html>

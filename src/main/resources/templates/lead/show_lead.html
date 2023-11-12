@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master">
+
+<body>
+<main layout:fragment="contenido">
+    <div class="col-12" id="app">
+        <h2>Leads</h2>
+        <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+             th:text="${mensaje}"
+             class="alert">
+        </div>
+        <a class="btn btn-success mb-2" th:href="@{/lead/add}">Agregar</a>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Asunto</th>
+                    <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="lead : ${lead}">
+                    <td th:text="${lead.asunto_lead}"></td>
+
+                    <td th:text="${lead.estado}"></td>
+                    <td th:text="${lead.cliente.nombre}"></td>
+                    <td>
+                        <a class="btn btn-warning" th:href="@{/lead/editar/} + ${lead.id}">Editar <i
+                                class="fa fa-edit"></i></a>
+                    </td>
+                    <td>
+                        <form th:action="@{/lead/delete}" method="post">
+                            <input type="hidden" name="id" th:value="${lead.id}"/>
+                            <button type="submit" class="btn btn-danger">Eliminar <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</main>
+<script th:inline="javascript">
+/*<![CDATA[*/
+[(${
+    console.log("Hola")
+    })]
+/*]]>*/
+</script>
+
+</body>
+</html>
