@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="master" xmlns="http://www.w3.org/1999/html">
+<head>
+
+</head>
+<body>
+
+<main layout:fragment="contenido">
+  <div class="col-12">
+    <h2>Agregar cotización</h2>
+    <div th:classappend="'alert-' + (${clase != null} ? ${clase} : info)" th:if="${mensaje != null}"
+         th:text="${mensaje}"
+         class="alert">
+    </div>
+    <form th:object="${cotizacion}" th:action="@{/cotizacion/save/} + ${opportunity.id}" method="post" onsubmit="return validateForm();">
+      <input type="hidden" th:object="${opportunity}" id="opportunityId" th:field="*{id}" />
+
+
+      <div class="form-group">
+        <label for="asunto_cotizacion">Asunto de la cotización</label>
+        <input autocomplete="off" autofocus th:field="*{asunto_cotizacion}" id="asunto_cotizacion"
+               placeholder="Escribe el asunto de la cotización" type="text"
+               class="form-control" th:classappend="${#fields.hasErrors('asunto_cotizacion')} ? 'is-invalid' : ''" required
+               title="Debes completar este campo">
+        <div class="invalid-feedback" th:errors="*{asunto_cotizacion}"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha_inicio">Fecha de Inicio</label>
+        <input type="date" th:field="*{fecha_inicio}" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha_fin">Fecha de Fin</label>
+        <input type="date" th:field="*{fecha_fin}" id="fecha_fin" name="fecha_fin" class="form-control" required>
+      </div>
+
+      <button class="btn btn-success" type="submit">Guardar</button>
+      &nbsp;<a class="btn btn-warning" th:object="${opportunity}" th:href="@{/opportunity/detail_opportunity/} + ${opportunity.id}">Ver todos</a>
+
+
+    </form>
+  </div>
+
+</main>
+
+
+</body>
+</html>

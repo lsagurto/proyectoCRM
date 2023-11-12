@@ -1,9 +1,6 @@
 package com.utp.venta.Modelos;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,16 +23,70 @@ public class Producto {
     @Min(value = 0, message = "El precio mínimo es 0")
     private Float precio;
 
+    public double calcularIngreso() {
+        // Realiza el cálculo del ingreso y devuelve el resultado como un valor double
+        double ingreso = getPrecio() * getExistencia(); // Modifica esto según tu lógica de cálculo
+        return ingreso;
+    }
+
+    public double calcularIngreso2() {
+        // Realiza el cálculo del ingreso y devuelve el resultado como un valor double
+        this.ingreso = this.precio * this.existencia; // Modifica esto según tu lógica de cálculo
+        return this.ingreso;
+    }
+
+    public Float getIngreso() {
+        return ingreso;
+    }
+
+    public void setIngreso(Float ingreso) {
+        this.ingreso = ingreso;
+    }
+
     @NotNull(message = "Debes especificar la existencia")
     @Min(value = 0, message = "La existencia mínima es 0")
     private Float existencia;
 
+    @Column(name = "ingreso")
+    private Float ingreso;
+
+    public Double getIngreso_with_igv() {
+        return ingreso_with_igv;
+    }
+
+    public void setIngreso_with_igv(Double ingreso_with_igv) {
+        this.ingreso_with_igv = ingreso_with_igv;
+    }
+
+    @Column(name = "ingreso_with_igv")
+    private Double ingreso_with_igv;
+
+    public Opportunity getOportunidad() {
+        return oportunidad;
+    }
+
+    public void setOportunidad(Opportunity oportunidad) {
+        this.oportunidad = oportunidad;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "oportunidad_id")
+    private Opportunity oportunidad;
 
     public Producto(String nombre, String codigo, Float precio, Float existencia, Integer id) {
         this.nombre = nombre;
         this.codigo = codigo;
         this.precio = precio;
         this.existencia = existencia;
+        this.id = id;
+    }
+
+    public Producto(String nombre, String codigo, Float precio, Float existencia, Float ingreso, Integer id) {
+        this.nombre = nombre;
+        this.codigo = codigo;
+        this.precio = precio;
+        this.existencia = existencia;
+        this.ingreso = ingreso;
         this.id = id;
     }
 

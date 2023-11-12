@@ -9,6 +9,38 @@ body {
 {
     display: inline-block;
 }
+.btn-opportinity{
+    background: #222F54;
+
+}
+
+.form-finish-sale{
+    display:flex;
+    justify-content: flex-end;
+}
+
+.btn-finish{
+    background: #222F54;
+
+}
+
+.box-detail-opportunity{
+    display:flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+}
+
+.box-detail-opportunity .detail{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.box-detail-opportunity .title-detail{
+    margin-bottom: 0rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
 .index{
  background-image: url("https://nachoperello.com/wp-content/uploads/2015/09/fondo-aumenta-ventas-nacho-perello2.jpg");
   background-size: cover;
