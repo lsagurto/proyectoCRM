@@ -203,8 +203,8 @@ public class PDFGeneratorServiceV0 {
         // Resto del código...
 
         JSONObject JSONTEXT = new JSONObject();
-        JSONTEXT.put("token", "tsi9kx557ie8bdq9");
-        JSONTEXT.put("to", "+51997315973");
+        JSONTEXT.put("token", "iwj7zlonuqzsrnn2");
+        JSONTEXT.put("to", "+51938687366");
         JSONTEXT.put("filename", "Cotización.pdf");
         JSONTEXT.put("document", base64Content);
         JSONTEXT.put("caption", "Estimado cliente, se adjunta cotización.");
@@ -217,7 +217,7 @@ public class PDFGeneratorServiceV0 {
         HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
 
         // Realiza la solicitud HTTP usando RestTemplate
-        String url = "https://api.ultramsg.com/instance68203/messages/document";
+        String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
