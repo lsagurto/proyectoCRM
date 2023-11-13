@@ -7,15 +7,21 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.utp.venta.Modelos.ProductSale;
 import com.utp.venta.Modelos.Producto;
+import net.minidev.json.JSONObject;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Base64;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import com.itextpdf.text.Image;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PDFGeneratorServiceV0 {
@@ -43,7 +49,9 @@ public class PDFGeneratorServiceV0 {
 
     public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, float totalBruto) throws IOException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, response.getOutputStream());
+        //  PdfWriter res = PdfWriter.getInstance(document, response.getOutputStream());
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter res = PdfWriter.getInstance(document, byteArrayOutputStream);
 
         document.open();
 
@@ -186,6 +194,36 @@ public class PDFGeneratorServiceV0 {
         document.add(table);
 
         document.close();
+
+        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+
+        // Convierte los bytes a una cadena Base64
+        String base64Content = Base64.getEncoder().encodeToString(pdfBytes);
+
+        // Resto del código...
+
+        JSONObject JSONTEXT = new JSONObject();
+        JSONTEXT.put("token", "tsi9kx557ie8bdq9");
+        JSONTEXT.put("to", "+51997315973");
+        JSONTEXT.put("filename", "Cotización.pdf");
+        JSONTEXT.put("document", base64Content);
+        JSONTEXT.put("caption", "Estimado cliente, se adjunta cotización.");
+
+        // Construye las cabeceras de la solicitud
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Construye la entidad HTTP con el objeto JSON y las cabeceras
+        HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
+
+        // Realiza la solicitud HTTP usando RestTemplate
+        String url = "https://api.ultramsg.com/instance68203/messages/document";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        System.out.println("Respuesta de la API: " + responseEntity.getBody());
+        String texts = "aea";
+        texts = "a";
+
     }
 
 

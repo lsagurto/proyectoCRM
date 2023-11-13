@@ -236,6 +236,7 @@ public class OpportunityController {
         List<ProductSale> productos = productSaleRepository.findByIdIn(productIds);
 
         this.pdfGeneratorService.exportList(response,"001", productos, nombreCliente, totalBruto);
+        //this.pdfGeneratorServic
     }
 
 }

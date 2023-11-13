@@ -1,8 +1,12 @@
 package com.utp.venta.Controladores;
 
 import com.utp.venta.Service.PDFGeneratorServiceV0;
+import net.minidev.json.JSONObject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
@@ -26,5 +30,9 @@ public class PDFExportController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment, filename=pdf_"+currenDateTime+".pfg";
         response.setHeader(headerKey,headerValue);
+
+       // response.getCharacterEncoding().get;
+
+
     }
 }
