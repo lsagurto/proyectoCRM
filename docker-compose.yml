@@ -2,10 +2,10 @@ version: '3'
 
 services:
   api:
-    container_name: crm
-    image: crm
+    container_name: crm-utp
+    image: crm-utp
     build:
-      context: ../..
+      context: ./
       dockerfile: Dockerfile
     ports:
       - 9043:9043
