@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  api:
+    container_name: crm
+    image: crm
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    ports:
+      - 9043:9043
+    restart: always
+    volumes:
+      - /root/certs:/tmp/certs
