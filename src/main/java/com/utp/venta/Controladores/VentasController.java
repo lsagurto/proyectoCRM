@@ -56,6 +56,6 @@ public class VentasController {
         String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        this.pdfGeneratorService.export(response,"001");
+       // this.pdfGeneratorService.exportList(response,"001");
     }
 }

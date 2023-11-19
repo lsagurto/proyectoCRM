@@ -1,6 +1,5 @@
 package com.utp.venta.Service;
 
-import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -10,7 +9,7 @@ import com.utp.venta.Modelos.Producto;
 import net.minidev.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-
+import com.lowagie.text.Image;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -20,33 +19,16 @@ import java.util.Base64;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import com.itextpdf.text.Image;
+//import com.itextpdf.text.Image;
 import org.springframework.web.client.RestTemplate;
+import com.lowagie.text.pdf.draw.LineSeparator;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import com.lowagie.text.BadElementException;
 
 @Service
 public class PDFGeneratorServiceV0 {
-    public void export(HttpServletResponse reponse, String test) throws IOException{
-        Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, reponse.getOutputStream());
-
-        document.open();
-        Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        fontTitle.setSize(18);
-
-        Paragraph paragraph = new Paragraph("Documento de venta",fontTitle);
-        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
-
-        Font fontParagraph = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        fontParagraph.setSize(12);
-
-        Paragraph paragraph2 = new Paragraph("ID: 000000000"+test,fontParagraph);
-        paragraph2.setAlignment(Paragraph.ALIGN_RIGHT);
-
-        document.add(paragraph);
-        document.add(paragraph2);
-        document.close();
-    }
-
     public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, float totalBruto) throws IOException {
         Document document = new Document(PageSize.A4);
         //  PdfWriter res = PdfWriter.getInstance(document, response.getOutputStream());
@@ -55,8 +37,17 @@ public class PDFGeneratorServiceV0 {
 
         document.open();
 
-        Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        fontTitle.setSize(18);
+        try {
+            Image image = Image.getInstance("classpath:static/img/img-logo.jpeg");
+            image.scaleToFit(80, 80);
+            document.add(image);
+            System.out.println(image);
+        }catch (BadElementException e) {
+            throw new RuntimeException(e);
+        }
+
+        /*Font date_address = FontFactory();
+        date_address.setSize(12);*/
 
         // Crear una tabla para los productos
         PdfPTable table = new PdfPTable(4);
@@ -156,8 +147,25 @@ public class PDFGeneratorServiceV0 {
         table.addCell(cellTotalLabel);
         table.addCell(cellTotal);
 
-        Paragraph paragraph = new Paragraph("COTIZACIÓN", fontTitle);
-        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        Date currentDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        calendar.add(Calendar.MONTH, 2);
+
+        Date futureDate = calendar.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy");
+        String formattedFutureDate = dateFormat.format(futureDate);
+
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy");
+        String formattedDate = dateFormat2.format(currentDate);
+
+        Font font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setSize(12);
+        font.setStyle(Font.NORMAL);
+
+        Paragraph date_address = new Paragraph("Lima: " + formattedDate, font);
 
         Font fontParagraph = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         fontParagraph.setSize(12);
@@ -176,6 +184,29 @@ public class PDFGeneratorServiceV0 {
         Paragraph mensajeLabel = new Paragraph("Le escribimos con el fin de darle respuesta a su solicitud de cotización que usted nos ha solicitado");
         mensajeLabel.setSpacingBefore(15);
 
+        Paragraph text_after_table = new Paragraph("Esta cotización tiene validez a partir del día " + formattedDate + " hasta "+formattedFutureDate , font);
+        text_after_table.setSpacingBefore(15);
+
+        Paragraph text_atentamente = new Paragraph("Atentamente, " , font);
+        text_atentamente.setSpacingBefore(15);
+
+        text_atentamente.add(Chunk.NEWLINE);
+        text_atentamente.add(Chunk.NEWLINE);
+        text_atentamente.add(Chunk.NEWLINE);
+
+        Paragraph emptyParagraph = new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 1));
+        emptyParagraph.setIndentationLeft(0);
+        emptyParagraph.setIndentationRight(0);
+
+        text_atentamente.add(emptyParagraph );
+
+        LineSeparator lineSeparator = new LineSeparator();
+        lineSeparator.setLineWidth(1);  // Establecer el ancho de la línea según sea necesario
+        lineSeparator.setPercentage(20);  // Ajustar el porcentaje de ancho según sea necesario
+        text_atentamente.add(lineSeparator);
+
+
+
         Paragraph paragraph2 = new Paragraph("ID: 000000000" + test, fontParagraph);
         paragraph2.setAlignment(Paragraph.ALIGN_RIGHT);
         paragraph2.setSpacingBefore(25);
@@ -185,13 +216,15 @@ public class PDFGeneratorServiceV0 {
         Font fontProduct = FontFactory.getFont(FontFactory.HELVETICA);
         fontProduct.setSize(10);
 
-        document.add(paragraph);
+        document.add(date_address);
         document.add(clienteLabelParagraph);
         document.add(nombreClienteParagraph);
         document.add(saludoLabel);
         document.add(mensajeLabel);
-        document.add(paragraph2);
+        //document.add(paragraph2);
         document.add(table);
+        document.add(text_after_table);
+        document.add(text_atentamente);
 
         document.close();
 
@@ -204,7 +237,7 @@ public class PDFGeneratorServiceV0 {
 
         JSONObject JSONTEXT = new JSONObject();
         JSONTEXT.put("token", "iwj7zlonuqzsrnn2");
-        JSONTEXT.put("to", "+51938687366");
+        JSONTEXT.put("to", "+51935546045");
         JSONTEXT.put("filename", "Cotización.pdf");
         JSONTEXT.put("document", base64Content);
         JSONTEXT.put("caption", "Estimado cliente, se adjunta cotización.");
@@ -219,9 +252,11 @@ public class PDFGeneratorServiceV0 {
         // Realiza la solicitud HTTP usando RestTemplate
         String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
+        System.out.println(JSONTEXT.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
         String texts = "aea";
+
         texts = "a";
 
     }
