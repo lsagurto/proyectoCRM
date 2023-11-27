@@ -40,9 +40,6 @@ public class Lead implements Serializable {
     private String estado;
 
 
-    @Column(name = "exist_client") // Nombre de la columna en la tabla Lead que almacena el estado
-    private boolean exist_client = false;
-
     public Lead(Integer id, String asunto_lead, Cliente cliente, String estado) {
         this.id = id;
         this.asunto_lead = asunto_lead;
@@ -84,12 +81,4 @@ public class Lead implements Serializable {
         this.estado = estado;
     }
 
-
-    public boolean isExist_client() {
-        return exist_client;
-    }
-
-    public void setExist_client(boolean exist_client) {
-        this.exist_client = exist_client;
-    }
 }

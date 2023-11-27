@@ -1,11 +1,9 @@
 package com.utp.venta.Controladores;
 
-import com.utp.venta.Modelos.Cliente;
-import com.utp.venta.Modelos.Lead;
-import com.utp.venta.Modelos.Opportunity;
-import com.utp.venta.Modelos.Producto;
+import com.utp.venta.Modelos.*;
 import com.utp.venta.Repository.ClienteRepository;
 import com.utp.venta.Repository.LeadRepository;
+import com.utp.venta.Repository.LeadRepositoryFromWSP;
 import com.utp.venta.Repository.OpportunityRepository;
 import com.utp.venta.Service.ServiceLead;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,9 @@ public class LeadController {
     private LeadRepository leadRepository;
 
     @Autowired
+    private LeadRepositoryFromWSP leadRepositoryFromWSP;
+
+    @Autowired
     private OpportunityRepository opportunityRepository;
 
     @Autowired
@@ -38,11 +39,11 @@ public class LeadController {
     @Autowired
     private ServiceLead serviceLead;
 
-    @PostMapping("/crear")
+    /*@PostMapping("/crear")
     public ResponseEntity<Lead> crearLeadService(@RequestParam String nombre, @RequestParam Cliente cliente) {
         Lead nuevoLead = serviceLead.crearLead(nombre, cliente);
         return new ResponseEntity<>(nuevoLead, HttpStatus.CREATED);
-    }
+    }*/
 
     @GetMapping(value = "/add")
     public String addLead(Model model) {
@@ -60,7 +61,7 @@ public class LeadController {
 
     @GetMapping(value = "/show")
     public String showLead(Model model) {
-        model.addAttribute("lead", leadRepository.findAll());
+        model.addAttribute("lead", leadRepositoryFromWSP.findAll());
         return "lead/show_lead";
     }
 
@@ -138,6 +139,7 @@ public class LeadController {
     @GetMapping(value = "/editar/{id}")
     public String showFormEdit(@PathVariable int id, Model model) {
         Lead lead = leadRepository.findById(id).orElse(null);
+
         model.addAttribute("lead", lead);
 
         if (lead != null) {

@@ -232,10 +232,11 @@ public class OpportunityController {
 
 
         String nombreCliente = opportunity.getCliente().getNombre();
+        String dniCliente = opportunity.getCliente().getNumeroDocumento();
 
         List<ProductSale> productos = productSaleRepository.findByIdIn(productIds);
 
-        this.pdfGeneratorService.exportList(response,"001", productos, nombreCliente, totalBruto);
+        this.pdfGeneratorService.exportList(response,"001", productos, nombreCliente, dniCliente, totalBruto);
         //this.pdfGeneratorServic
     }
 

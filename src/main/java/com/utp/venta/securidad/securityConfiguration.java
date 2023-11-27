@@ -31,8 +31,15 @@ public class securityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/","/css/**","/js/**","/webfonts/**","/static/webfonts/**","static/css/**","/auth/**",",/public/**","/css**","/js**","/min**",",/min.js**").permitAll().anyRequest().authenticated()
+        http
+                .authorizeRequests()
+                .antMatchers("/leadFromWSP/show", "/leadFromWSP/add").permitAll() // Permitir acceso a estas rutas sin autenticación
+                .antMatchers("/","/css/**","/js/**","/webfonts/**","/static/webfonts/**","static/css/**","/auth/**",",/public/**","/css**","/js**","/min**",",/min.js**").permitAll()
+                .anyRequest().authenticated()
                 .and()
+                .csrf()
+                .ignoringAntMatchers("/leadFromWSP/add") // Deshabilitar CSRF para /leadFromWSP/add
+                .disable()
                 .formLogin().loginPage("/auth/login").defaultSuccessUrl("/private/index",true).failureUrl("/auth/login?error=true")
                 .loginProcessingUrl("/auth/login-post").permitAll()
                 .and()

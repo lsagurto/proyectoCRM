@@ -25,10 +25,10 @@ public class WhatsappController {
         lead.setAsunto_lead(nombre);
         lead.setCliente(cliente);
 
-        Lead nuevoLead = serviceLead.crearLead(nombre, cliente);
+        //Lead nuevoLead = serviceLead.crearLead(nombre, cliente);
 
         // Aquí deberías enviar un mensaje de confirmación al usuario a través de Twilio
-        enviarMensajeConfirmacion(numeroTelefono, "Lead creado con éxito. Asunto: " + nuevoLead.getAsunto_lead());
+        //enviarMensajeConfirmacion(numeroTelefono, "Lead creado con éxito. Asunto: " + nuevoLead.getAsunto_lead());
     }
 
     private void enviarMensajeConfirmacion(String numeroTelefono, String mensaje) {

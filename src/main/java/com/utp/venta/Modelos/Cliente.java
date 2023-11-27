@@ -106,12 +106,12 @@ public class Cliente implements Serializable {
     @Size(min = 1, max = 50, message = "El email debe medir entre 1 y 50")
     private String email;
 
-    @NotNull(message = "Debes especificar la direccion")
-    @Min(value = 0, message = "La direccion debe medir entre 1 y 50")
+    //@NotNull(message = "Debes especificar la direccion")
+    //@Min(value = 0, message = "La direccion debe medir entre 1 y 50")
     private String direccion;
 
-    @NotNull(message = "Debes especificar el telefono")
-    @Min(value = 0, message = "La telefono debe medir entre 1 y 50")
+    //@NotNull(message = "Debes especificar el telefono")
+    //@Min(value = 0, message = "La telefono debe medir entre 1 y 50")
     private String telefono;
 
     @NotNull(message = "Debes especificar el numero documento")

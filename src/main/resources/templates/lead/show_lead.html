@@ -26,12 +26,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="lead : ${lead}">
-                    <td th:text="${lead.asunto_lead}"></td>
+                    <td th:text="${lead.lead_id.asunto_lead}"></td>
 
-                    <td th:text="${lead.estado}"></td>
-                    <td th:text="${lead.cliente.nombre}"></td>
+                    <td th:text="${lead.lead_id.estado}"></td>
+                    <td th:text="${lead.nom_cliente}"></td>
                     <td>
-                        <a class="btn btn-warning" th:href="@{/lead/editar/} + ${lead.id}">Editar <i
+                        <a class="btn btn-warning" th:href="@{/lead/editar/{leadId}(leadId=${lead.lead_id.id})}">Editar <i
                                 class="fa fa-edit"></i></a>
                     </td>
                     <td>

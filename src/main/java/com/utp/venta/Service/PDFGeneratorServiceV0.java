@@ -15,21 +15,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 //import com.itextpdf.text.Image;
 import org.springframework.web.client.RestTemplate;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
+
 import com.lowagie.text.BadElementException;
 
 @Service
 public class PDFGeneratorServiceV0 {
-    public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, float totalBruto) throws IOException {
+    public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, String dniCliente, float totalBruto) throws IOException {
         Document document = new Document(PageSize.A4);
         //  PdfWriter res = PdfWriter.getInstance(document, response.getOutputStream());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -37,9 +36,16 @@ public class PDFGeneratorServiceV0 {
 
         document.open();
 
+        float documentWidth = document.getPageSize().getWidth();
+        float logoXPosition = documentWidth - 140;
+        float logoYPosition = document.top() - 115;
+
         try {
             Image image = Image.getInstance("classpath:static/img/img-logo.jpeg");
-            image.scaleToFit(80, 80);
+            image.scaleToFit(130, 130);
+
+            image.setAbsolutePosition(logoXPosition, logoYPosition);
+
             document.add(image);
             System.out.println(image);
         }catch (BadElementException e) {
@@ -161,33 +167,73 @@ public class PDFGeneratorServiceV0 {
         SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy");
         String formattedDate = dateFormat2.format(currentDate);
 
-        Font font = FontFactory.getFont(FontFactory.HELVETICA);
-        font.setSize(12);
-        font.setStyle(Font.NORMAL);
+        Font font_normal = FontFactory.getFont(FontFactory.HELVETICA);
+        font_normal.setSize(11);
+        font_normal.setStyle(Font.NORMAL);
 
-        Paragraph date_address = new Paragraph("Lima: " + formattedDate, font);
+        Font font_bold = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        font_bold.setSize(11);
+        //font_bold.setStyle(Font.BOLD);
+
+        Paragraph number_order_title = new Paragraph("ORDEN DE PEDIDO: 011-019", font_bold);
+        number_order_title.setAlignment(Element.ALIGN_CENTER);
+        number_order_title.setSpacingBefore(-20f);
+
+        Paragraph razon_social = new Paragraph();
+        razon_social.add(new Chunk("RAZON SOCIAL: ", font_normal));
+        razon_social.add(new Chunk("R.B COLLECTION COMPANY", font_bold));
+
+
+        razon_social.setAlignment(Element.ALIGN_LEFT);
+        razon_social.setSpacingBefore(20);
+
 
         Font fontParagraph = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         fontParagraph.setSize(12);
 
-        Paragraph clienteLabelParagraph = new Paragraph("Cliente:", FontFactory.getFont(FontFactory.HELVETICA_BOLD));
-        clienteLabelParagraph.setSpacingBefore(20);
+        Paragraph number_RUC = new Paragraph();
+        number_RUC.add(new Chunk("RUC:", font_normal));
+        number_RUC.add(new Chunk("10400536894", font_bold));
+        number_RUC.setSpacingBefore(5);
 
-        Paragraph nombreClienteParagraph = new Paragraph(nombreCliente);
+        Paragraph number_phone = new Paragraph();
+        number_phone.add(new Chunk("CELULAR:", font_normal));
+        number_phone.add(new Chunk("969288315", font_bold));
+        number_phone.setSpacingBefore(5);
+
+        Paragraph contact_name = new Paragraph();
+        contact_name.add(new Chunk("CONTACTO:", font_normal));
+        contact_name.add(new Chunk("Yuliana", font_bold));
+        contact_name.setSpacingBefore(5);
+
+        LineSeparator lineSeparatorTop = new LineSeparator();
+        lineSeparatorTop.setLineWidth(1);
+        lineSeparatorTop.setPercentage(100);
+
+        Paragraph nombreClienteParagraph = new Paragraph("CLIENTE: "+nombreCliente, font_normal);
+
+        Paragraph dniClienteParagraph = new Paragraph("DNI: "+dniCliente, font_normal);
+        dniClienteParagraph.setSpacingBefore(5);
+
+        Date date_issue = new Date();
+        SimpleDateFormat dateFormatIssue = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDateIssue = dateFormatIssue.format(date_issue);
+
+        Paragraph fechaParagraph = new Paragraph("FECHA DE EMISIÓN: " + formattedDateIssue, font_normal);
+        fechaParagraph.setSpacingBefore(5);
+
+        Paragraph empresaatiende = new Paragraph("ATENDIDO POR : TIENDA RB MAYORISTA" , font_normal);
+        empresaatiende.setSpacingBefore(5);
+
 
         Paragraph asuntoCotizacion = new Paragraph("Asunto: cotización N° 00030");
         asuntoCotizacion.setSpacingBefore(15);
 
-        Paragraph saludoLabel = new Paragraph("Cordial saludo señor: "+ nombreCliente + ",");
-        saludoLabel.setSpacingBefore(15);
 
-        Paragraph mensajeLabel = new Paragraph("Le escribimos con el fin de darle respuesta a su solicitud de cotización que usted nos ha solicitado");
-        mensajeLabel.setSpacingBefore(15);
-
-        Paragraph text_after_table = new Paragraph("Esta cotización tiene validez a partir del día " + formattedDate + " hasta "+formattedFutureDate , font);
+        Paragraph text_after_table = new Paragraph("Esta cotización tiene validez a partir del día " + formattedDate + " hasta "+formattedFutureDate , font_normal);
         text_after_table.setSpacingBefore(15);
 
-        Paragraph text_atentamente = new Paragraph("Atentamente, " , font);
+        Paragraph text_atentamente = new Paragraph("Atentamente, " , font_normal);
         text_atentamente.setSpacingBefore(15);
 
         text_atentamente.add(Chunk.NEWLINE);
@@ -198,11 +244,11 @@ public class PDFGeneratorServiceV0 {
         emptyParagraph.setIndentationLeft(0);
         emptyParagraph.setIndentationRight(0);
 
-        text_atentamente.add(emptyParagraph );
+        text_atentamente.add(emptyParagraph);
 
         LineSeparator lineSeparator = new LineSeparator();
-        lineSeparator.setLineWidth(1);  // Establecer el ancho de la línea según sea necesario
-        lineSeparator.setPercentage(20);  // Ajustar el porcentaje de ancho según sea necesario
+        lineSeparator.setLineWidth(1);
+        lineSeparator.setPercentage(20);
         text_atentamente.add(lineSeparator);
 
 
@@ -216,12 +262,19 @@ public class PDFGeneratorServiceV0 {
         Font fontProduct = FontFactory.getFont(FontFactory.HELVETICA);
         fontProduct.setSize(10);
 
-        document.add(date_address);
-        document.add(clienteLabelParagraph);
+        document.add(number_order_title);
+        document.add(razon_social);
+        document.add(number_RUC);
+        document.add(number_phone);
+        document.add(contact_name);
+        document.add(new Chunk(lineSeparatorTop));
+
+
         document.add(nombreClienteParagraph);
-        document.add(saludoLabel);
-        document.add(mensajeLabel);
-        //document.add(paragraph2);
+        document.add(dniClienteParagraph);
+        document.add(fechaParagraph);
+        document.add(empresaatiende);
+
         document.add(table);
         document.add(text_after_table);
         document.add(text_atentamente);
@@ -229,6 +282,17 @@ public class PDFGeneratorServiceV0 {
         document.close();
 
         byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=archivo.pdf");
+        response.setContentLength(pdfBytes.length);
+
+        try {
+            response.getOutputStream().write(pdfBytes);
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Convierte los bytes a una cadena Base64
         String base64Content = Base64.getEncoder().encodeToString(pdfBytes);
@@ -244,20 +308,23 @@ public class PDFGeneratorServiceV0 {
 
         // Construye las cabeceras de la solicitud
         HttpHeaders headers = new HttpHeaders();
+        headers.add("user-agent", "Application");
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // Construye la entidad HTTP con el objeto JSON y las cabeceras
         HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
 
         // Realiza la solicitud HTTP usando RestTemplate
-        String url = "https://api.ultramsg.com/instance68416/messages/document";
+        /*String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(JSONTEXT.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
         String texts = "aea";
 
-        texts = "a";
+        texts = "a";*/
 
     }
 
