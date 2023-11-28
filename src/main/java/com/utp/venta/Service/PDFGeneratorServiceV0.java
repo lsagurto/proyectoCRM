@@ -1,6 +1,10 @@
 package com.utp.venta.Service;
 
+import com.itextpdf.text.BaseColor;
 import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.CMYKColor;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -11,6 +15,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import com.lowagie.text.Image;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -30,7 +35,6 @@ import com.lowagie.text.BadElementException;
 public class PDFGeneratorServiceV0 {
     public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, String dniCliente, float totalBruto) throws IOException {
         Document document = new Document(PageSize.A4);
-        //  PdfWriter res = PdfWriter.getInstance(document, response.getOutputStream());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter res = PdfWriter.getInstance(document, byteArrayOutputStream);
 
@@ -52,29 +56,33 @@ public class PDFGeneratorServiceV0 {
             throw new RuntimeException(e);
         }
 
-        /*Font date_address = FontFactory();
-        date_address.setSize(12);*/
-
         // Crear una tabla para los productos
         PdfPTable table = new PdfPTable(4);
         table.setWidthPercentage(100); // La tabla ocupa el 100% del ancho disponible
 
-        table.getDefaultCell().setMinimumHeight(30);
-        float headerRowHeight = 30;
+        table.getDefaultCell().setMinimumHeight(18);
+        float headerRowHeight = 18;
+
+        PdfPTable table2 = createSecondTable();
 
         // Encabezados de la tabla
-        PdfPCell cellCantidad = new PdfPCell(new Phrase("Cantidad", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cellNombre = new PdfPCell(new Phrase("Nombre", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cellPrecio = new PdfPCell(new Phrase("Precio", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cellIngreso = new PdfPCell(new Phrase("Ingreso", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+        PdfPCell cellNombre = createHeaderCell("MODELO");
+        PdfPCell cellCantidad = createHeaderCell("CANTIDAD");
+        PdfPCell cellPrecio = createHeaderCell("P.UNIT.");
+        PdfPCell cellIngreso = createHeaderCell("SUB TOTAL");
+
+        float[] columnWidths = { 2f, 0.5f, 0.5f, 0.5f };
+        table.setWidths(columnWidths);
 
         cellCantidad.setMinimumHeight(headerRowHeight);
         cellNombre.setMinimumHeight(headerRowHeight);
         cellPrecio.setMinimumHeight(headerRowHeight);
         cellIngreso.setMinimumHeight(headerRowHeight);
 
-        table.addCell(cellCantidad);
+        //cellNombre.setColspan(2);
         table.addCell(cellNombre);
+
+        table.addCell(cellCantidad);
         table.addCell(cellPrecio);
         table.addCell(cellIngreso);
 
@@ -82,8 +90,8 @@ public class PDFGeneratorServiceV0 {
 
         // Agregar los productos a la tabla
         for (ProductSale producto : productos) {
-            table.addCell(String.valueOf(producto.getCantidad()));
             table.addCell(producto.getProducto().getNombre());
+            table.addCell(String.valueOf(producto.getCantidad()));
             table.addCell(String.valueOf("S/. "+producto.getPrecio()));
             table.addCell(String.valueOf("S/. "+producto.getIngreso()));
         }
@@ -226,38 +234,6 @@ public class PDFGeneratorServiceV0 {
         empresaatiende.setSpacingBefore(5);
 
 
-        Paragraph asuntoCotizacion = new Paragraph("Asunto: cotización N° 00030");
-        asuntoCotizacion.setSpacingBefore(15);
-
-
-        Paragraph text_after_table = new Paragraph("Esta cotización tiene validez a partir del día " + formattedDate + " hasta "+formattedFutureDate , font_normal);
-        text_after_table.setSpacingBefore(15);
-
-        Paragraph text_atentamente = new Paragraph("Atentamente, " , font_normal);
-        text_atentamente.setSpacingBefore(15);
-
-        text_atentamente.add(Chunk.NEWLINE);
-        text_atentamente.add(Chunk.NEWLINE);
-        text_atentamente.add(Chunk.NEWLINE);
-
-        Paragraph emptyParagraph = new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 1));
-        emptyParagraph.setIndentationLeft(0);
-        emptyParagraph.setIndentationRight(0);
-
-        text_atentamente.add(emptyParagraph);
-
-        LineSeparator lineSeparator = new LineSeparator();
-        lineSeparator.setLineWidth(1);
-        lineSeparator.setPercentage(20);
-        text_atentamente.add(lineSeparator);
-
-
-
-        Paragraph paragraph2 = new Paragraph("ID: 000000000" + test, fontParagraph);
-        paragraph2.setAlignment(Paragraph.ALIGN_RIGHT);
-        paragraph2.setSpacingBefore(25);
-
-
         // Agrega los productos al documento
         Font fontProduct = FontFactory.getFont(FontFactory.HELVETICA);
         fontProduct.setSize(10);
@@ -276,8 +252,7 @@ public class PDFGeneratorServiceV0 {
         document.add(empresaatiende);
 
         document.add(table);
-        document.add(text_after_table);
-        document.add(text_atentamente);
+        document.add(table2);
 
         document.close();
 
@@ -326,6 +301,106 @@ public class PDFGeneratorServiceV0 {
 
         texts = "a";*/
 
+    }
+
+    private static PdfPTable createSecondTable() {
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100); // La tabla ocupa el 100% del ancho disponible
+
+        table.getDefaultCell().setMinimumHeight(30);
+        float headerRowHeight = 15;
+
+        // Encabezado grande
+        PdfPCell cellEncabezadoGrande = createHeaderCellGreen("ENVIO POR SHALOM(PAGO DEL ENVÍO A DESTINO)", 10);
+        cellEncabezadoGrande.setColspan(2);
+        table.addCell(cellEncabezadoGrande);
+
+
+        float[] columnWidths = { 2f, 0.7f };
+        table.setWidths(columnWidths);
+
+        // Encabezado izquierdo
+        PdfPCell cellEncabezadoIzquierdo = createHeaderCellGray("PAGOS EN AGENTE CERO COMISIÓN", 10, 0);
+        table.addCell(cellEncabezadoIzquierdo);
+
+        // Contenido izquierdo
+        PdfPCell cellEncabezadoDerecho = createHeaderCellGray("CATÁLOGO VIRTUAL", 10, 1);
+
+        PdfPCell cellBancoNacion = new PdfPCell(new Phrase("BCP: 191-70753103-0-79 (a nombre de Rocío Fernández Chapilliquén)\n\n" +
+                "BANCO DE LA NACIÓN: 04-076722655 (a nombre de Rocío Fernández Chapilliquén)\n\n"+
+                "ACEPTAMOS YAPE ó PLIN: 958680299 (a nombre de Rocío Fernández Chapilliquén)", FontFactory.getFont(FontFactory.HELVETICA, 10)));
+
+        table.addCell(cellEncabezadoDerecho);
+        cellBancoNacion.setFixedHeight(70);
+
+        table.addCell(cellBancoNacion);
+
+
+        // Contenido derecho (imagen QR)
+        PdfPCell cellImagenQR = new PdfPCell();
+
+        try {
+            Image image = Image.getInstance("classpath:static/img/img-qr.PNG");
+            image.scaleToFit(100, 100);
+            cellImagenQR.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cellImagenQR.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            cellImagenQR.addElement(image);
+            cellImagenQR.setRowspan(3);
+            cellImagenQR.setFixedHeight(100);
+            image.setAlignment(Element.ALIGN_CENTER);
+            table.addCell(cellImagenQR);
+            System.out.println(image);
+            System.out.println(cellImagenQR);
+        }catch (BadElementException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        PdfPCell cellObservaciones = createHeaderCellGray("***OBSERVACIONES:", 10, 0);
+        table.addCell(cellObservaciones);
+
+        PdfPCell cellValidezCotizacion = new PdfPCell(new Phrase("*Validez de cotización: 2 días (SUJETO A VARIACIÓN DE STOCK)\n\n"+
+                "CUALQUIER CAMBIO O RECLAMO SE ATENDERA DENTRO DE 7 DÍAS DE CALENDARIO.\n\n"+
+                "DESDE LA FECHA QUE RECIBISTE TU PEDIDO.", FontFactory.getFont(FontFactory.HELVETICA,10)));
+        cellValidezCotizacion.setFixedHeight(80);
+        table.addCell(cellValidezCotizacion);
+
+        return table;
+    }
+
+    private static PdfPCell createHeaderCell(String text) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10)));
+        float headerRowHeight = 18;
+        cell.setMinimumHeight(headerRowHeight);
+        cell.setBackgroundColor(new Color(255, 249, 22));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        return cell;
+    }
+
+    private static PdfPCell createHeaderCellGray(String text, float fontSize, int align) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA_BOLD, fontSize)));
+        float headerRowHeight = 18;
+        cell.setMinimumHeight(headerRowHeight);
+        cell.setBackgroundColor(new Color(192, 192, 192));
+        cell.setHorizontalAlignment(align);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        return cell;
+    }
+
+    private static PdfPCell createHeaderCellGreen(String text, float fontSize ) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA_BOLD,fontSize)));
+        float headerRowHeight = 18;
+        cell.setMinimumHeight(headerRowHeight);
+        cell.setBackgroundColor(new Color(61, 199, 76));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+        return cell;
     }
 
 
