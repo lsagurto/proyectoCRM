@@ -32,7 +32,7 @@
       <div class="form-group">
         <label for="existencia">Precio</label>
         <input autocomplete="off" th:field="*{precio}" id="precio" placeholder="Precio del producto"
-               type="number"
+               type="text"
                class="form-control" th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''">
         <div class="invalid-feedback" th:errors="*{precio}"></div>
       </div>
