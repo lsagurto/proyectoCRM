@@ -235,10 +235,11 @@ public class ProductosController {
         return "redirect:/opportunity/detail_opportunity/" + id;
     }
     @PostMapping(value = "/agregar2/{indice}/{id}")
-    public String agregarAlCarrito2(@PathVariable int indice, @PathVariable int id, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String agregarAlCarrito2(@PathVariable String indice, @PathVariable int id, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
         //Producto productoExistente = productosRepository.findById(id).orElse(null);
         //Opportunity opportunity = productoExistente.getOportunidad();
+        System.out.println("entro a agregar al carrito"+indice);
 
         Producto productoBuscadoPorCodigo = productosRepository.findFirstByCodigo(String.valueOf(indice));
         if (productoBuscadoPorCodigo == null) {
@@ -271,7 +272,7 @@ public class ProductosController {
     }
 
     @PostMapping(value = "/agregar3/{indice}/{id}")
-    public String agregarAlCarrito3(@PathVariable int indice, @PathVariable int id, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String agregarAlCarrito3(@PathVariable String indice, @PathVariable int id, @ModelAttribute Producto producto, HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
         //Producto productoExistente = productosRepository.findById(id).orElse(null);
         //Opportunity opportunity = productoExistente.getOportunidad();
