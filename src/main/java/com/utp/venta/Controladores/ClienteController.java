@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,6 +36,7 @@ public class ClienteController {
 
     @GetMapping(value = "/agregar")
     public String agregarcliente(Model model) {
+
         model.addAttribute("cliente", new Cliente());
 
         return "cliente/agregar_cliente";
@@ -107,6 +109,36 @@ public class ClienteController {
                     .addFlashAttribute("clase", "warning");
             return "redirect:/cliente/agregar";
         }
+        else
+        {
+            // setear nombre y apellido
+            String apiUrl = "https://api.apis.net.pe/v2/reniec/dni";
+            String dni = cliente.getNumeroDocumento();
+            String token = "apis-token-6640.hm3GQAjuy7k8koT8uWp7Hym-mjzRuMZ-";
+
+            WebClient webClient = WebClient.builder()
+                    .baseUrl(apiUrl)
+                    .defaultHeader("Accept", "application/json")
+                    .defaultHeader("Authorization", "Bearer " + token)
+                    .build();
+
+            String nombres, apellidoPaterno, apellidoMaterno, tipoDocumento, numeroDocumento, digitoVerificador;
+
+            String jsonResponse = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.queryParam("numero", dni).build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block(); // En un entorno real, evita usar block() y maneja la respuesta de manera reactiva.
+
+            // Parsing del JSON manualmente (puedes usar una librería JSON como Jackson si prefieres)
+            nombres = obtenerValorDelCampo(jsonResponse, "nombres");
+            apellidoPaterno = obtenerValorDelCampo(jsonResponse, "apellidoPaterno");
+            apellidoMaterno = obtenerValorDelCampo(jsonResponse, "apellidoMaterno");
+
+            cliente.setNombre(nombres+" "+apellidoMaterno+" "+apellidoPaterno);
+
+
+        }
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")
                 .addFlashAttribute("clasxe", "success");
@@ -114,5 +146,13 @@ public class ClienteController {
         cliente.setidUsuario(usuarioBuscadoPorCodigo.getId());
         clienteRepository.save(cliente);
         return "redirect:/cliente/agregar";
+    }
+
+    private static String obtenerValorDelCampo(String jsonResponse, String campo) {
+        // Parsing simple del JSON (puedes usar una librería JSON como Jackson si prefieres)
+        String campoBuscado = "\"" + campo + "\":\"";
+        int inicio = jsonResponse.indexOf(campoBuscado) + campoBuscado.length();
+        int fin = jsonResponse.indexOf("\"", inicio);
+        return jsonResponse.substring(inicio, fin);
     }
 }

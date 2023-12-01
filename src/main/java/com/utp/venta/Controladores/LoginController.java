@@ -26,6 +26,7 @@ public class    LoginController {
 
     @GetMapping("/auth/registro")
     public String registroForm(Model model){
+
         model.addAttribute("usuario", new Usuario());
 
         return "registro";
@@ -33,6 +34,7 @@ public class    LoginController {
 
     @PostMapping("/auth/registro")
     public String registro(@Valid @ModelAttribute Usuario usuario, BindingResult result, Model model){
+        usuario.setRol(1);
         if(result.hasErrors())
         {
             return "redirect:/auth/registro";

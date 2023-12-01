@@ -27,6 +27,7 @@
 			<artifactId>twilio</artifactId>
 			<version>7.53.0</version> <!-- Verifica la última versión en el repositorio Maven -->
 		</dependency>
+
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery</artifactId>
@@ -107,6 +108,13 @@
 			<artifactId>openpdf</artifactId>
 			<version>1.3.8</version>
 		</dependency>
+		<!-- Maven -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

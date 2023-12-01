@@ -33,7 +33,7 @@ import com.lowagie.text.BadElementException;
 
 @Service
 public class PDFGeneratorServiceV0 {
-    public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, String dniCliente, float totalBruto) throws IOException {
+    public void exportList(HttpServletResponse response, String test, List<ProductSale> productos, String nombreCliente, String dniCliente, String telefono, float totalBruto) throws IOException {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter res = PdfWriter.getInstance(document, byteArrayOutputStream);
@@ -259,7 +259,7 @@ public class PDFGeneratorServiceV0 {
         byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=archivo.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=Cotizacion.pdf");
         response.setContentLength(pdfBytes.length);
 
         try {
@@ -276,7 +276,7 @@ public class PDFGeneratorServiceV0 {
 
         JSONObject JSONTEXT = new JSONObject();
         JSONTEXT.put("token", "iwj7zlonuqzsrnn2");
-        JSONTEXT.put("to", "+51935546045");
+        JSONTEXT.put("to", "+51"+telefono);
         JSONTEXT.put("filename", "Cotización.pdf");
         JSONTEXT.put("document", base64Content);
         JSONTEXT.put("caption", "Estimado cliente, se adjunta cotización.");
@@ -292,14 +292,14 @@ public class PDFGeneratorServiceV0 {
         HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
 
         // Realiza la solicitud HTTP usando RestTemplate
-        /*String url = "https://api.ultramsg.com/instance68416/messages/document";
+        String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(JSONTEXT.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
         String texts = "aea";
 
-        texts = "a";*/
+     //   texts = "a";*/
 
     }
 

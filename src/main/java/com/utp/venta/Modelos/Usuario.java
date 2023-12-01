@@ -93,14 +93,14 @@ public class Usuario implements Serializable {
     private String email;
 
     @NotNull(message = "Debes especificar el usuario")
-    @Min(value = 0, message = "El usuario debe medir entre 1 y 50")
+   // @Min(value = 0, message = "El usuario debe medir entre 1 y 50")
     private String username;
 
     @NotNull(message = "Debes especificar la contraseña")
-    @Min(value = 0, message = "La contraseña debe medir entre 1 y 50")
+   // @Min(value = 0, message = "La contraseña debe medir entre 1 y 50")
     private String password;
 
-    @NotNull(message = "Debes especificar el rol")
+
     private Integer rol;
 
 

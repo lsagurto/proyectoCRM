@@ -58,7 +58,7 @@ public class VenderController {
     }
 
     @PostMapping(value = "/terminar")
-    public String terminarVenta(@ModelAttribute Cliente cliente, @ModelAttribute Usuarios usuarios, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String terminarVenta(@ModelAttribute Cliente cliente, @ModelAttribute Usuario usuarios, HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
         // Si no hay carrito o está vacío, regresamos inmediatamente
         ClienteParaVender carritoCliente = this.obtenerCliente(request);
@@ -136,7 +136,7 @@ public class VenderController {
     }
 
     @PostMapping(value = "/agregarCliente")
-    public String agregarCliente(@ModelAttribute Cliente cliente, @ModelAttribute Usuarios usuarios, BindingResult bindingResult, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String agregarCliente(@ModelAttribute Cliente cliente, @ModelAttribute Usuario usuarios, BindingResult bindingResult, HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ClienteParaVender carritoCliente = this.obtenerCliente(request);
         Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         Cliente clienteBuscadoPorCodigo = clienteRepository.findByNumeroDocumento(cliente.getNumeroDocumento());
