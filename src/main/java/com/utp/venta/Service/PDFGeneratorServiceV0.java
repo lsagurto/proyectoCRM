@@ -277,12 +277,12 @@ public class PDFGeneratorServiceV0 {
         HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
 
         // Realiza la solicitud HTTP usando RestTemplate
-        /*String url = "https://api.ultramsg.com/instance68416/messages/document";
+        String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(JSONTEXT.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
-        String texts = "aea";*/
+        String texts = "aea";
 
      //   texts = "a";*/
 
