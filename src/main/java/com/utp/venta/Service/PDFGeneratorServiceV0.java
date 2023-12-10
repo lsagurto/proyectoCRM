@@ -21,9 +21,11 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 //import com.itextpdf.text.Image;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import java.text.SimpleDateFormat;
@@ -87,14 +89,31 @@ public class PDFGeneratorServiceV0 {
         table.addCell(cellIngreso);
 
         table.setSpacingBefore(10);
+        List<ProductSale> productosEspeciales = new ArrayList<>();
 
         // Agregar los productos a la tabla
         for (ProductSale producto : productos) {
+            if (esProductoEspecial(producto)) {
+                // Agregar productos especiales al final de la tabla
+                continue;
+            }
             table.addCell(producto.getProducto().getNombre());
             table.addCell(String.valueOf(producto.getCantidad()));
             table.addCell(String.valueOf("S/. "+producto.getPrecio()));
             table.addCell(String.valueOf("S/. "+producto.getIngreso()));
         }
+
+
+        for (ProductSale producto : productos) {
+            // Verificar si el producto es especial (embalaje o delivery)
+            if (esProductoEspecial(producto)) {
+                table.addCell(producto.getProducto().getNombre());
+                table.addCell(String.valueOf(""));
+                table.addCell(String.valueOf(""));
+                table.addCell(String.valueOf("S/. "+producto.getIngreso()));
+            }
+        }
+
 
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
@@ -105,45 +124,11 @@ public class PDFGeneratorServiceV0 {
 
         for (ProductSale producto : productos) {
             sumaIngresos += producto.getIngreso();
-            System.out.println("sumaIngresos "+sumaIngresos);
 
         }
         double igv = sumaIngresos * 0.18;
         String igvFormateado = decimalFormat.format(igv);
 
-        System.out.println("igv "+igvFormateado);
-
-
-        // Agregar una fila de subtotal y la suma de ingresos
-        PdfPCell cellEmpty = new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        cellEmpty.setBorder(Rectangle.NO_BORDER);
-        PdfPCell cellEmpty2 = new PdfPCell(new Phrase(String.valueOf(""), FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        cellEmpty2.setBorder(Rectangle.NO_BORDER);
-        PdfPCell cellSubtotalLabel = new PdfPCell(new Phrase("Subtotal", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cellTotalIngresos = new PdfPCell(new Phrase("S/. "+String.valueOf(sumaIngresos), FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-
-        cellSubtotalLabel.setMinimumHeight(headerRowHeight);
-        cellTotalIngresos.setMinimumHeight(headerRowHeight);
-
-        table.addCell(cellEmpty2);
-        table.addCell(cellEmpty);
-        table.addCell(cellSubtotalLabel);
-        table.addCell(cellTotalIngresos);
-
-        PdfPCell cellEmpty3 = new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        cellEmpty3.setBorder(Rectangle.NO_BORDER);
-        PdfPCell cellEmpty4 = new PdfPCell(new Phrase(String.valueOf(""), FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        cellEmpty4.setBorder(Rectangle.NO_BORDER);
-        PdfPCell cellIgvLabel = new PdfPCell(new Phrase("IGV (18%)", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cellTotalIgv = new PdfPCell(new Phrase("S/. "+String.valueOf(igvFormateado), FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-
-        cellIgvLabel.setMinimumHeight(headerRowHeight);
-        cellTotalIgv.setMinimumHeight(headerRowHeight);
-
-        table.addCell(cellEmpty3);
-        table.addCell(cellEmpty4);
-        table.addCell(cellIgvLabel);
-        table.addCell(cellTotalIgv);
 
         PdfPCell cellEmpty5 = new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
         cellEmpty5.setBorder(Rectangle.NO_BORDER);
@@ -292,17 +277,19 @@ public class PDFGeneratorServiceV0 {
         HttpEntity<String> requestEntity = new HttpEntity<>(JSONTEXT.toString(), headers);
 
         // Realiza la solicitud HTTP usando RestTemplate
-        String url = "https://api.ultramsg.com/instance68416/messages/document";
+        /*String url = "https://api.ultramsg.com/instance68416/messages/document";
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(JSONTEXT.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         System.out.println("Respuesta de la API: " + responseEntity.getBody());
-        String texts = "aea";
+        String texts = "aea";*/
 
      //   texts = "a";*/
 
     }
-
+    private boolean esProductoEspecial(ProductSale producto) {
+        return producto.getProducto().getCodigo().equals("codigoEmbalaje") || producto.getProducto().getCodigo().equals("codigoDelivery");
+    }
     private static PdfPTable createSecondTable() {
         PdfPTable table = new PdfPTable(2);
         table.setWidthPercentage(100); // La tabla ocupa el 100% del ancho disponible

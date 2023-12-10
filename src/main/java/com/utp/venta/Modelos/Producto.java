@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 public class Producto {
@@ -12,7 +13,7 @@ public class Producto {
     private Integer id;
 
     @NotNull(message = "Debes especificar el nombre")
-    @Size(min = 1, max = 50, message = "El nombre debe medir entre 1 y 50")
+    @Size(min = 1, max = 100, message = "El nombre debe medir entre 1 y 50")
     private String nombre;
 
     @NotNull(message = "Debes especificar el código")
@@ -22,6 +23,14 @@ public class Producto {
     @NotNull(message = "Debes especificar el precio")
     @Min(value = 0, message = "El precio mínimo es 0")
     private Float precio;
+
+    @Column(name = "fecha_creacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCreacion;
+
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaModificacion;
 
     public double calcularIngreso() {
         // Realiza el cálculo del ingreso y devuelve el resultado como un valor double
@@ -49,6 +58,22 @@ public class Producto {
 
     @Column(name = "ingreso")
     private Float ingreso;
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
 
     public Double getIngreso_with_igv() {
         return ingreso_with_igv;

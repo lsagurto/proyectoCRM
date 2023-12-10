@@ -23,6 +23,13 @@ public class ProductoParaVender extends Producto {
         }
     }
 
+    public void formatearIngreso(DecimalFormat decimalFormat) {
+        if (this.getIngreso() != null) {
+            Float ingreso = Float.parseFloat(decimalFormat.format((double) this.getIngreso()));
+            this.setIngreso(ingreso);
+        }
+    }
+
     public ProductoParaVender(String nombre, String codigo, Float precio, Float existencia, Float ingreso, Integer id, Float cantidad) {
         super(nombre, codigo, precio, existencia, ingreso, id);
         this.cantidad = cantidad;

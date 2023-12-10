@@ -26,8 +26,9 @@
       </div>
       <div class="form-group">
         <label for="estado">Estado</label>
-        <select class="form-control" th:field="*{estado}" id="estado" disabled>
-          <option value="Abierto">Abierto</option>
+        <select class="form-control" th:field="*{estado}" id="estado">
+          <option value="Abierto" th:selected="${actividad.estado == 'Abierto'}">Abierto</option>
+
         </select>
       </div>
       <div class="form-group">

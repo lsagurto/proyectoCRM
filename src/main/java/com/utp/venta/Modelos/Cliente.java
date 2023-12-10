@@ -5,6 +5,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "cliente")
@@ -117,6 +118,30 @@ public class Cliente implements Serializable {
     @NotNull(message = "Debes especificar el numero documento")
     @Min(value = 0, message = "El dni debe medir entre 1 y 50")
     private String numeroDocumento;
+
+    @Column(name = "fecha_creacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCreacion;
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Date getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(Date fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
+    @Column(name = "fecha_modificacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaModificacion;
 
     @NotNull(message = "Debes especificar el tipo de documento")
     @Min(value = 0, message = "El tipo documento debe medir entre 1 y 50")

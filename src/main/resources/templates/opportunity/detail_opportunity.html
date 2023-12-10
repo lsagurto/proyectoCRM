@@ -62,7 +62,20 @@
         </form>
 
         <form th:if="${session.carrito_product != null and session.carrito_product.size() > 0}" class="form-finish-sale" th:object="${producto}" th:action="@{'/productos/finish_sale/' + ${opportunity.id}}" method="post">
-            <button class="btn btn-primary mb-2 btn-finish" type="submit" >Terminar venta</button>
+            <div class="contain-check">
+                <div class="form-group">
+                    <input type="hidden" name="embalaje" value="true" checked>
+                    <input type="checkbox" name="delivery" value="true"> Agregar delivery
+                </div>
+                <div class="form-group">
+                    <label for="precioEmbalaje">Precio del Embalaje:</label>
+                    <input type="number" name="precioEmbalaje" id="precioEmbalaje" value="6.0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary mb-2 btn-finish" type="submit" >Terminar venta</button>
+                </div>
+            </div>
+
         </form>
 
         <div class="table-responsive">
@@ -73,7 +86,6 @@
                     <th>Precio</th>
                     <th>Cantidad</th>
                     <th>Ingreso</th>
-                    <th>Ingreso (con igv)</th>
                     <th>Editar</th>
 
                 </tr>
@@ -112,7 +124,7 @@
                         </div>
                     </td>
                     <td th:text="${producto.total}"></td>
-                    <td th:text="${producto.ingresoConIGV}"></td>
+
                     <td>
                         <a class="btn btn-warning" th:href="@{/productos/edit_product/} + ${producto.id}">Editar <i
                                 class="fa fa-edit"></i></a>
@@ -121,6 +133,7 @@
                 </tr>
                 </tbody>
             </table>
+
         </div>
     </div>
     <div class="col-12" >
@@ -204,4 +217,26 @@
 </main>
 
 </body>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        // Obtener la lista de productos desde Thymeleaf
+        var productosList = /*[[${productos_list}]]*/ [];
+
+        // Evento de cambio en el campo de búsqueda
+        $('#productoSearch').on('input', function () {
+            var searchTerm = $(this).val().toLowerCase();
+            var filteredProductos = productosList.filter(function (producto) {
+                return producto.nombre.toLowerCase().includes(searchTerm);
+            });
+
+            // Limpiar y volver a llenar el select con los resultados filtrados
+            $('#id').empty();
+            $('#id').append('<option value="">Selecciona un producto</option>');
+            filteredProductos.forEach(function (producto) {
+                $('#id').append('<option value="' + producto.id + '">' + producto.nombre + '</option>');
+            });
+        });
+    });
+</script>
+
 </html>

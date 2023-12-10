@@ -17,6 +17,8 @@ import javax.validation.Valid;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -72,6 +74,17 @@ public class ProductosController {
                     .addFlashAttribute("clase", "warning");
             return "redirect:/productos/agregar";
         }
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+        Date nuevaFechaModificacion = calendar.getTime();
+        producto.setFechaCreacion(nuevaFechaModificacion);
+
+        producto.setFechaModificacion(nuevaFechaModificacion);
+
         productosRepository.save(producto);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")
@@ -149,7 +162,8 @@ public class ProductosController {
     }
 
     @PostMapping(value = "/finish_sale/{id}")
-    public String finishSale(@PathVariable int id, HttpServletRequest request, RedirectAttributes redirectAttrs) {
+    public String finishSale(@PathVariable int id, @RequestParam(value = "embalaje", required = false) boolean agregarEmbalaje, @RequestParam(value = "delivery", required = false) boolean agregarDelivery,         @RequestParam(value = "precioEmbalaje", required = false, defaultValue = "6.00") float precioEmbalaje,
+                             HttpServletRequest request, RedirectAttributes redirectAttrs) {
         ArrayList<ProductoParaVender> carrito = this.obtenerCarrito(request);
 
         Opportunity opportunity = opportunityRepository.findById(id).orElse(null);
@@ -165,6 +179,10 @@ public class ProductosController {
 
         float totalNeto = 0.0f;
         float totalBruto = 0.0f;
+
+        Producto productoEmbalaje = productosRepository.findFirstByCodigo("codigoEmbalaje");
+        Producto productoDelivery = productosRepository.findFirstByCodigo("codigoDelivery");
+
 
         // Itera a través de los productos en el carrito
         for (ProductoParaVender productoParaVender : carrito) {
@@ -191,7 +209,7 @@ public class ProductosController {
                         venta.setPrecio(productoBuscadoPorCodigo.getPrecio());
 
                         float ingreso = cantidadVendida * venta.getPrecio();
-                        float ingresoConIGV = ingreso * 1.18f;
+                        float ingresoConIGV = ingreso * 1f;
 
                         // Formatea los valores a dos decimales
                         ingreso = Float.parseFloat(decimalFormat.format(ingreso));
@@ -218,6 +236,38 @@ public class ProductosController {
                     }
                 }
             }
+        }
+        System.out.println("agregar embalaje es "+agregarEmbalaje);
+        if (agregarEmbalaje) {
+            ProductSale embalaje = new ProductSale();
+            embalaje.setProducto(productoEmbalaje);
+            embalaje.setCantidad(1.00f);
+            embalaje.setPrecio(precioEmbalaje);
+            embalaje.setIngreso(precioEmbalaje);
+            embalaje.setIngreso_with_igv(precioEmbalaje);
+            embalaje.setOportunidad(opportunity);
+
+            // Guardar embalaje en la base de datos
+            productSaleRepository.save(embalaje);
+
+            totalNeto += embalaje.getIngreso();
+            totalBruto += embalaje.getIngreso_with_igv();
+        }
+
+        if (agregarDelivery) {
+            ProductSale delivery = new ProductSale();
+            delivery.setProducto(productoDelivery);
+            delivery.setCantidad(1.00f);
+            delivery.setPrecio(16.00f);
+            delivery.setIngreso(16.00f);
+            delivery.setIngreso_with_igv(16.00f);
+            delivery.setOportunidad(opportunity);
+
+            // Guardar delivery en la base de datos
+            productSaleRepository.save(delivery);
+
+            totalNeto += delivery.getIngreso();
+            totalBruto += delivery.getIngreso_with_igv();
         }
 
         opportunity.setEstado("Ganada");
@@ -346,7 +396,6 @@ public class ProductosController {
         }
 
         boolean encontrado = false;
-        System.out.println(carrito);
 
         for (ProductoParaVender productoParaVenderActual : carrito) {
             if (productoParaVenderActual.getId().equals(productoBuscadoPorCodigo.getId())) {
@@ -357,7 +406,6 @@ public class ProductosController {
             }
         }
         if (!encontrado) {
-            System.out.println(encontrado);
             Float cantidad = 1f;
             ProductoParaVender nuevoProducto = new ProductoParaVender(productoBuscadoPorCodigo.getNombre(), productoBuscadoPorCodigo.getCodigo(), productoBuscadoPorCodigo.getPrecio(), productoBuscadoPorCodigo.getExistencia(), productoBuscadoPorCodigo.getIngreso(), productoBuscadoPorCodigo.getId(), cantidad);
             float ingresoConIGV = (float) (Math.round (nuevoProducto.getPrecio() * cantidad * 1.18f * 100.0)/100.0);
@@ -367,6 +415,7 @@ public class ProductosController {
 
            // carrito.add(new ProductoParaVender(productoBuscadoPorCodigo.getNombre(), productoBuscadoPorCodigo.getCodigo(), productoBuscadoPorCodigo.getPrecio(), productoBuscadoPorCodigo.getExistencia(), productoBuscadoPorCodigo.getIngreso(), ingresoConIGV, productoBuscadoPorCodigo.getId(), 1f));
         }
+
         this.guardarCarrito(carrito, request);
 
         return "redirect:/opportunity/detail_opportunity/" + id;
@@ -388,13 +437,13 @@ public class ProductosController {
 
         Float ingreso = producto.getExistencia() * producto.getPrecio();
 
-        producto.setIngreso(ingreso);
+        //producto.setIngreso(ingreso);
 
         // Calcula el ingreso con IGV (18%)
         double igv = ingreso * 0.18;
         double ingresoConIgv = ingreso + igv;
 
-        producto.setIngreso_with_igv(ingresoConIgv);
+        //producto.setIngreso_with_igv(ingresoConIgv);
 
         productosRepository.save(producto);
 
@@ -428,6 +477,16 @@ public class ProductosController {
                     .addFlashAttribute("clase", "warning");
             return "redirect:/productos/agregar";
         }
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        producto.setFechaCreacion(nuevaFechaCreacion);
+
         productosRepository.save(producto);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")

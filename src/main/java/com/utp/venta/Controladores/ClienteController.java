@@ -15,6 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 @Controller
@@ -77,15 +80,38 @@ public class ClienteController {
             return "redirect:/cliente/cliente";
         }
         Cliente posibleClienteExistente = clienteRepository.findByNumeroDocumento(cliente.getNumeroDocumento());
+        Cliente existingCliente = clienteRepository.findById(cliente.getId()).orElse(null);
 
-            if (posibleClienteExistente != null && !posibleClienteExistente.getId().equals(cliente.getId())) {
+        if (posibleClienteExistente != null && !posibleClienteExistente.getId().equals(cliente.getId())) {
             redirectAttrs
                     .addFlashAttribute("mensaje", "Ya existe un cliente con ese numero de documento")
                     .addFlashAttribute("clase", "warning");
             return "redirect:/cliente/agregar";
         }
 
-        clienteRepository.save(cliente);
+        existingCliente.setDireccion(cliente.getDireccion());
+        existingCliente.setEmail(cliente.getEmail());
+        existingCliente.setId(cliente.getId());
+        existingCliente.setNombre(cliente.getNombre());
+        existingCliente.setTelefono(cliente.getTelefono());
+        existingCliente.setFechaCreacion(cliente.getFechaCreacion());
+        existingCliente.setNumeroDocumento(cliente.getNumeroDocumento());
+
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaModificacion = calendar.getTime();
+
+        existingCliente.setFechaModificacion(nuevaFechaModificacion);
+
+
+        clienteRepository.save(existingCliente);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")
                 .addFlashAttribute("clase", "success");
@@ -144,6 +170,20 @@ public class ClienteController {
                 .addFlashAttribute("clasxe", "success");
         Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         cliente.setidUsuario(usuarioBuscadoPorCodigo.getId());
+
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        cliente.setFechaCreacion(nuevaFechaCreacion);
+
         clienteRepository.save(cliente);
         return "redirect:/cliente/agregar";
     }

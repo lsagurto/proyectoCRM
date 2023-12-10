@@ -17,7 +17,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Validated
@@ -71,10 +74,17 @@ public class LeadController {
         if (opportunity != null) {
             opportunityRepository.delete(opportunity); // Elimina la oportunidad asociada
         }
+
+        // Busca y elimina el registro en LeadFromWSP asociado al Lead
+        LeadFromWSP leadFromWSP = leadRepositoryFromWSP.findByLead(lead);
+        if (leadFromWSP != null) {
+            leadRepositoryFromWSP.delete(leadFromWSP);
+        }
+        leadRepository.delete(lead);
+
         redirectAttrs
                 .addFlashAttribute("mensaje", "Eliminado correctamente")
                 .addFlashAttribute("clase", "warning");
-        leadRepository.deleteById(lead.getId());
         return "redirect:/lead/show";
     }
 
@@ -88,6 +98,19 @@ public class LeadController {
             opportunity.setAsunto(lead.getAsunto_lead());
             opportunity.setCliente(lead.getCliente());
             opportunity.setEstado("En Proceso");
+
+            TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+            Date fechaActual = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fechaActual);
+
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+            Date nuevaFechaCreacion = calendar.getTime();
+
+            opportunity.setFechaCreacion(nuevaFechaCreacion);
 
             opportunityRepository.save(opportunity);
 
@@ -124,12 +147,39 @@ public class LeadController {
             return "redirect:/cliente/add";
         }
 
-        redirectAttrs
-                .addFlashAttribute("mensaje", "Lead agregado correctamente")
-                .addFlashAttribute("clase", "success");
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        lead.setFechaCreacion(nuevaFechaCreacion);
+
         lead.setEstado("Contactado");
 
         leadRepository.save(lead);
+
+        Cliente cliente = clienteRepository.findById(lead.getCliente().getId()).orElse(null);
+
+        if (cliente != null) {
+            LeadFromWSP leadFromWSP = new LeadFromWSP();
+            leadFromWSP.setAsunto_lead(lead.getAsunto_lead());
+            leadFromWSP.setDni(cliente.getNumeroDocumento());
+            leadFromWSP.setEmail(cliente.getEmail());
+            leadFromWSP.setNom_cliente(cliente.getNombre());
+            leadFromWSP.setLead_id(lead);
+
+            leadRepositoryFromWSP.save(leadFromWSP);
+        }
+
+        redirectAttrs
+                .addFlashAttribute("mensaje", "Lead agregado correctamente")
+                .addFlashAttribute("clase", "success");
 
         Integer leadId = lead.getId();
 
@@ -163,11 +213,40 @@ public class LeadController {
             return "redirect:/lead/lead";
         }
 
-        leadRepository.save(lead);
-        redirectAttrs
-                .addFlashAttribute("mensaje", "Editado correctamente")
-                .addFlashAttribute("clase", "success");
-        return "redirect:/lead/editar/" + id;
+        Lead existingLead = leadRepository.findById(id).orElse(null);
+
+
+        if (existingLead != null) {
+            existingLead.setAsunto_lead(lead.getAsunto_lead());
+            existingLead.setCliente(lead.getCliente());
+            existingLead.setEstado(lead.getEstado());
+
+            TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+            Date fechaActual = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fechaActual);
+
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+            Date nuevaFechaModificacion = calendar.getTime();
+
+            existingLead.setFechaModificacion(nuevaFechaModificacion);
+
+            leadRepository.save(existingLead);
+
+
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "Editado correctamente")
+                    .addFlashAttribute("clase", "success");
+            return "redirect:/lead/editar/" + id;
+        } else {
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "Lead no encontrado")
+                    .addFlashAttribute("clase", "danger");
+            return "redirect:/lead/lead";
+        }
     }
 
 }

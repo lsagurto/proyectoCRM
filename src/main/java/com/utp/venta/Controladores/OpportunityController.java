@@ -22,9 +22,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Validated
@@ -111,6 +109,24 @@ public class OpportunityController {
         existingOpportunity.setEstado(opportunity.getEstado());
         existingOpportunity.setCliente(opportunity.getCliente());
 
+        // Configura la zona horaria para la fecha de modificación
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        // Obtiene la fecha y hora actual
+        Date fechaActual = new Date();
+
+        // Crea un objeto Calendar y lo inicializa con la fecha y hora actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        // Resta 5 horas a la fecha y hora actual
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        // Obtiene la nueva fecha y hora después de restarle 5 horas
+        Date nuevaFechaModificacion = calendar.getTime();
+
+        existingOpportunity.setFechaModificacion(nuevaFechaModificacion);
+
         opportunityRepository.save(existingOpportunity);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")
@@ -151,15 +167,26 @@ public class OpportunityController {
         symbols2.setDecimalSeparator('.');
 
         DecimalFormat decimalFormatIngresoIGV = new DecimalFormat("#.##", symbols2);
+        DecimalFormat decimalFormatIngreso = new DecimalFormat("#.##", symbols2);
 
         // Combina las listas de product_sale y session.carrito_product
         List<ProductoParaVender> productosCombinados = new ArrayList<>(productosEnCarrito);
+
+        List<ProductoParaVender> productosEspeciales = new ArrayList<>();
+
         for (ProductSale productSale : productSales) {
             Producto productoEnVenta = productSale.getProducto();
             Float cantidad = productSale.getCantidad();
 
             ProductoParaVender productoParaVender = new ProductoParaVender(productoEnVenta, cantidad);
             productoParaVender.setExistencia(productSale.getCantidad());
+
+            if (productoParaVender.getIngreso() != null) {
+                Float ingreso = Float.parseFloat(decimalFormatIngreso.format((double) productoParaVender.getIngreso()));
+                productoParaVender.setIngreso(ingreso);
+
+            }
+
             productoParaVender.setIngresoConIGV(productSale.getIngreso_with_igv());
 
             if (productoParaVender.getIngresoConIGV() != null) {
@@ -168,10 +195,19 @@ public class OpportunityController {
             }
 
             productoParaVender.formatearIngresoConIGV(decimalFormatIngresoIGV);
+            productoParaVender.formatearIngreso(decimalFormatIngreso);
 
-            productosCombinados.add(productoParaVender);
+            if (productoEnVenta.getCodigo().equals("codigoEmbalaje") || productoEnVenta.getCodigo().equals("codigoDelivery")) {
+                productosEspeciales.add(productoParaVender);
+            } else {
+                productosCombinados.add(productoParaVender);
+            }
+
 
         }
+
+        productosCombinados.addAll(productosEspeciales);
+
 
 
         // Calcula el total bruto y total neto de los productos vendidos

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @Validated
 @Controller
@@ -82,11 +82,25 @@ public class ActividadController {
         if (actividadExistente != null) {
             Opportunity opportunity = actividadExistente.getOportunidad(); // Obtener la oportunidad a través de la relación
 
+
             actividadExistente.setAsunto_actividad(actividad.getAsunto_actividad());
             actividadExistente.setCliente(actividad.getCliente());
-            actividadExistente.setEstado(actividad.getEstado());
+            actividadExistente.setEstado(actividad.getEstado().toString());
             actividadExistente.setTipoActividad(actividad.getTipoActividad());
             actividadExistente.setNote_activity(actividad.getNote_activity());
+
+            TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+            Date fechaActual = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fechaActual);
+
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+            Date nuevaFechaCreacion = calendar.getTime();
+
+            actividadExistente.setFechaModificacion(nuevaFechaCreacion);
 
             actividadRepository.save(actividadExistente);
 
@@ -115,6 +129,20 @@ public class ActividadController {
         if (opportunity == null) {
             return "redirect:/opportunity/show";
         }
+
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        actividad.setFechaCreacion(nuevaFechaCreacion);
+
         actividad.setOportunidad(opportunity);
         actividad.setEstado("Activo");
 
