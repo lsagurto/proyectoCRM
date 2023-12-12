@@ -49,12 +49,12 @@ body {
     font-weight: 700;
     font-size: 1.2rem;
 }
-.index{
- background-image: url("https://nachoperello.com/wp-content/uploads/2015/09/fondo-aumenta-ventas-nacho-perello2.jpg");
-  background-size: cover;
-          -moz-background-size: cover;
-          -webkit-background-size: cover;
-          -o-background-size: cover;
+.index {
+    background-image: url("https://i.ibb.co/Bqfx0Yp/Screenshot-1-out.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh; /* Set a specific height to the container, adjust as needed */
 }
 .navbar .nav-item:not(:last-child) {
   margin-right: 35px;

@@ -1,50 +1,17 @@
 <nav th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml"
      class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" role="navigation">
-    <a class="navbar-brand" th:href="@{/private/index}">SISTEMA CRM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-<!--    <button class="navbar-toggler" type="button" data-toggle="collapse"-->
-<!--            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"-->
-<!--            aria-expanded="false" aria-label="Toggle navigation">-->
-<!--        <span class="navbar-toggler-icon"></span>-->
-<!--    </button>-->
-
-<!--    <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
-<!--        <ul class="navbar-nav mr-auto">-->
-<!--            <li class="nav-item active">-->
-<!--                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="#">Link</a>-->
-<!--            </li>-->
-<!--            <li class="nav-item dropdown">-->
-<!--                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"-->
-<!--                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                    Dropdown-->
-<!--                </a>-->
-<!--                <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--                    <a class="dropdown-item" href="#">Action</a>-->
-<!--                    <a class="dropdown-item" href="#">Another action</a>-->
-<!--                    <div class="dropdown-divider"></div>-->
-<!--                    <a class="dropdown-item" href="#">Something else here</a>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link disabled" href="#">Disabled</a>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--        <form class="form-inline my-2 my-lg-0">-->
-<!--            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
-<!--            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
-<!--        </form>-->
-<!--    </div>-->
+    <a class="navbar-brand" th:href="@{/private/index}">
+        <img src="https://i.ibb.co/mSG283f/your-image.png" alt="Logo" height="30" class="mr-2"> RB COLLECTION
+    </a>
     <div class="navbar-collapse collapse" id="menu">
-        &nbsp;
-        &nbsp;
-        &nbsp;
         <ul class="nav navbar-nav navbar-left">
             <h1 class="text-white" th:if="${session.usuario.username == 'Test3'}"></h1>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Datos Maestros
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -67,11 +34,7 @@
 
                     <a class="dropdown-item"th:href="@{/lead/show}">Leads</a>
                     <div class="dropdown-divider"></div>
-
                     <a class="dropdown-item"th:href="@{/opportunity/show}">Oportunidades</a>
-
-
-                   <!-- <a class="dropdown-item"th:href="@{/tipo_actividad/show}">Tipo de actividad</a>-->
                 </div>
             </li>
 
@@ -85,14 +48,6 @@
                     <a class="dropdown-item" th:href="@{/Reportes/}">Cliente x Ventas</a>
                 </div>
             </li>
-<!--            <li class="nav-item dropdown" th:if="${session.usuario.rol == 1}">-->
-<!--                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                   Configuración-->
-<!--                </a>-->
-<!--                <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--                    <a class="nav-link" th:href="@{/usuarios/mostrar}">Administrador de usuarios</a>-->
-<!--                </div>-->
-<!--            </li>-->
         </ul>
 
         <ul class="navbar-nav ml-auto align-items-center" style="float: right !important;">

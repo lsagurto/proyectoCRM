@@ -5,22 +5,15 @@
 <head></head>
 <body class="index">
 <main layout:fragment="contenido">
-    <div class="container mt-5" >
-        <div class="row ">
-            <div class="row">
-                <div class="col-sm float-left align-self-start">
-                                    <div class="card card-body" style="background-color: rgb(56, 60, 68);">
-                    <!--                    <span th:if="${session.usuario != null}">Bienvenido&nbsp;<span class="font-italic" th:text="${session.usuario.nombre}"></span></span>-->
-                    <!--                    <label class="col-md-3">Nombre</label>-->
-
-                    <h1 class="text-white" th:if="${session.usuario != null}">Bienvenido&nbsp;</h1>
-                    <h1 class="text-white" th:text="${session.usuario.nombre}"></h1>
-                                    </div>
-                </div>
-                <div class="col-sm">
-
-                </div>
-                <div class="col-sm">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-sm">
+                <!-- Empty column for spacing -->
+            </div>
+            <div class="col-sm text-center">
+                <div class="card card-body" style="background-color: rgb(56, 60, 68);">
+                    <h1 class="text-white font-italic" th:if="${session.usuario != null}" style="margin-bottom: 0;">Bienvenido</h1>
+                    <h1 class="text-white font-italic" th:text="${session.usuario.nombre}" style="margin-top: 0;"></h1>
                 </div>
             </div>
         </div>
