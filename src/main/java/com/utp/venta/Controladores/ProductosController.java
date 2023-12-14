@@ -5,6 +5,7 @@ import com.utp.venta.ProductoParaVender;
 import com.utp.venta.Repository.OpportunityRepository;
 import com.utp.venta.Repository.ProductSaleRepository;
 import com.utp.venta.Repository.ProductosRepository;
+import com.utp.venta.Repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ import java.util.List;
 public class ProductosController {
     @Autowired
     private ProductosRepository productosRepository;
+
+    @Autowired
+    private ProveedorRepository proveedorRepository;
 
     @Autowired
     private OpportunityRepository opportunityRepository;
@@ -94,7 +98,12 @@ public class ProductosController {
 
     @GetMapping(value = "/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable int id, Model model) {
+
+        List<Proveedor> proveedores = proveedorRepository.findAll();
+
         model.addAttribute("producto", productosRepository.findById(id).orElse(null));
+        model.addAttribute("proveedores", proveedores);
+
         return "productos/editar_producto";
     }
     @GetMapping(value = "/add_product/{opportunityId}")

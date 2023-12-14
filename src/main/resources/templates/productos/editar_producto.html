@@ -36,6 +36,14 @@
                        class="form-control" th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''">
                 <div class="invalid-feedback" th:errors="*{precio}"></div>
             </div>
+
+            <div class="form-group">
+                <label for="proveedor">Proveedor</label>
+                <select th:field="*{proveedor.id}" class="form-control" id="proveedor">
+                    <option th:each="proveedor : ${proveedores}" th:value="${proveedor.id}"
+                            th:text="${proveedor.razonSocial}"></option>
+                </select>
+            </div>
             <button class="btn btn-success" type="submit">Guardar</button>
             &nbsp;<a class="btn btn-warning" th:href="@{/productos/mostrar}">Ver todos</a>
         </form>

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 @Controller
 @RequestMapping(path = "/proveedor")
@@ -61,6 +64,20 @@ public class ProveedorController {
             return "redirect:/proveedor/agregar";
         }
 
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaModificacion = calendar.getTime();
+
+        //proveedor.setFechaCreacion(proveedor.getFechaCreacion());
+        proveedor.setFechaModificacion(nuevaFechaModificacion);
+
         proveedorRepository.save(proveedor);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")
@@ -88,7 +105,22 @@ public class ProveedorController {
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")
                 .addFlashAttribute("clase", "success");
+
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        proveedor.setFechaCreacion(nuevaFechaCreacion);
+
         proveedorRepository.save(proveedor);
+
         return "redirect:/proveedor/agregar";
     }
 }

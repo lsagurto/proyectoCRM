@@ -36,6 +36,7 @@
                        class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
                 <div class="invalid-feedback" th:errors="*{email}"></div>
             </div>
+
             <button class="btn btn-success" type="submit">Guardar</button>
             &nbsp;<a class="btn btn-warning" th:href="@{/proveedor/mostrar}">Ver todos</a>
         </form>

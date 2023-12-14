@@ -20,6 +20,7 @@
                     <th>Código</th>
                     <th>Precio</th>
                     <th>Stock</th>
+                    <th>Proveedor</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -30,6 +31,10 @@
                     <td th:text="${producto.codigo}"></td>
                     <td th:text="${producto.precio}"></td>
                     <td th:text="${producto.existencia}"></td>
+                    <td>
+                        <span th:if="${producto.proveedor != null}" th:text="${producto.proveedor.razonSocial}"></span>
+                        <span th:unless="${producto.proveedor != null}">Proveedor no especificado</span>
+                    </td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/productos/editar/} + ${producto.id}">Editar <i
                                 class="fa fa-edit"></i></a>
