@@ -30,7 +30,7 @@
 
             <div class="form-group" th:if="${lead.estado == 'Convertido'}">
                 <label for="estado_convertido">Estado</label>
-                <select class="form-control" th:field="*{estado}" id="estado_convertido" disabled>
+                <select class="form-control" th:field="*{estado}" id="estado_convertido">
                     <option value="Convertido">Convertido</option>
                 </select>
             </div>

@@ -21,6 +21,8 @@
                     <th>Precio</th>
                     <th>Stock</th>
                     <th>Proveedor</th>
+                    <th>Fec. Creación</th>
+                    <th>Fec. Edición</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -35,6 +37,8 @@
                         <span th:if="${producto.proveedor != null}" th:text="${producto.proveedor.razonSocial}"></span>
                         <span th:unless="${producto.proveedor != null}">Proveedor no especificado</span>
                     </td>
+                    <td th:text="${#dates.format(producto.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#dates.format(producto.fechaModificacion, 'dd/MM/yyyy')}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/productos/editar/} + ${producto.id}">Editar <i
                                 class="fa fa-edit"></i></a>

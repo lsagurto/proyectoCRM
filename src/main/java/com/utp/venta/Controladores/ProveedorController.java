@@ -1,6 +1,7 @@
 package com.utp.venta.Controladores;
 
 
+import com.utp.venta.Modelos.Producto;
 import com.utp.venta.Modelos.Proveedor;
 import com.utp.venta.Repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,15 @@ public class ProveedorController {
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
     @PostMapping(value = "/editar/{id}")
-    public String actualizarProveedor(@ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarProveedor(@PathVariable Integer id, @ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
         if (bindingResult.hasErrors()) {
             if (proveedor.getId() != null) {
                 return "proveedores/editar_proveedor";
             }
             return "redirect:/proveedor/proveedor";
         }
+        Proveedor proveedorExistente = proveedorRepository.findById(id).orElse(null);
+
         Proveedor posibleProveedorExistente = proveedorRepository.findByDocumento(proveedor.getDocumento());
 
             if (posibleProveedorExistente != null && !posibleProveedorExistente.getId().equals(proveedor.getId())) {
@@ -65,6 +68,8 @@ public class ProveedorController {
         }
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        proveedor.setFechaCreacion(proveedorExistente.getFechaCreacion());
 
         Date fechaActual = new Date();
 

@@ -1,6 +1,7 @@
 package com.utp.venta.Controladores;
 
 import com.utp.venta.Modelos.Cliente;
+import com.utp.venta.Modelos.Proveedor;
 import com.utp.venta.Modelos.Usuario;
 import com.utp.venta.Repository.UsuarioRepository;
 import com.utp.venta.Repository.ClienteRepository;
@@ -19,7 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-
+@CrossOrigin(origins = {"http://localhost:4200"})
 @Controller
 @RequestMapping(path = "/cliente")
 public class ClienteController {
@@ -72,13 +73,15 @@ public class ClienteController {
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
     @PostMapping(value = "/editar/{id}")
-    public String actualizarCliente(@ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarCliente(@PathVariable Integer id, @ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
         if (bindingResult.hasErrors()) {
             if (cliente.getId() != null) {
                 return "cliente/editar_cliente";
             }
             return "redirect:/cliente/cliente";
         }
+        Cliente clienteExistente = clienteRepository.findById(id).orElse(null);
+
         Cliente posibleClienteExistente = clienteRepository.findByNumeroDocumento(cliente.getNumeroDocumento());
         Cliente existingCliente = clienteRepository.findById(cliente.getId()).orElse(null);
 
@@ -94,10 +97,11 @@ public class ClienteController {
         existingCliente.setId(cliente.getId());
         existingCliente.setNombre(cliente.getNombre());
         existingCliente.setTelefono(cliente.getTelefono());
-        existingCliente.setFechaCreacion(cliente.getFechaCreacion());
         existingCliente.setNumeroDocumento(cliente.getNumeroDocumento());
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        cliente.setFechaCreacion(clienteExistente.getFechaCreacion());
 
         Date fechaActual = new Date();
 

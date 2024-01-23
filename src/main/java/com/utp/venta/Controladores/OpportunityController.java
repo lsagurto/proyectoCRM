@@ -39,6 +39,12 @@ public class OpportunityController {
     private ClienteRepository clienteRepository;
 
     @Autowired
+    private LeadRepositoryFromWSP leadRepositoryFromWSP;
+
+    @Autowired
+    private LeadRepository leadRepository;
+
+    @Autowired
     private ProductosRepository productosRepository;
 
     @Autowired
@@ -69,6 +75,41 @@ public class OpportunityController {
         model.addAttribute("clientes", clientes);
 
         return "opportunity/add_opportunity";
+    }
+
+    @PostMapping(value = "/save")
+    public String saveLead (@ModelAttribute("opportunity") @Valid Opportunity opportunity, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+        if (bindingResult.hasErrors()) {
+            // La validación ha fallado, redirige de vuelta al formulario
+            redirectAttrs
+                    .addFlashAttribute("mensaje", "Falta completar los datos")
+                    .addFlashAttribute("clase", "warning");
+            return "redirect:/cliente/add";
+        }
+
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        Date fechaActual = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        calendar.add(Calendar.HOUR_OF_DAY, -5);
+
+        Date nuevaFechaCreacion = calendar.getTime();
+
+        opportunity.setFechaCreacion(nuevaFechaCreacion);
+
+        opportunity.setEstado("En proceso");
+
+        opportunityRepository.save(opportunity);
+
+        redirectAttrs
+                .addFlashAttribute("mensaje", "Lead agregado correctamente")
+                .addFlashAttribute("clase", "success");
+
+
+        return "redirect:/opportunity/show";
     }
 
     @GetMapping(value = "/editar/{id}")
@@ -112,6 +153,8 @@ public class OpportunityController {
         // Configura la zona horaria para la fecha de modificación
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
+        opportunity.setFechaCreacion(existingOpportunity.getFechaCreacion());
+
         // Obtiene la fecha y hora actual
         Date fechaActual = new Date();
 
@@ -136,10 +179,32 @@ public class OpportunityController {
 
     @PostMapping(value = "/delete")
     public String eliminarOpportunity(@ModelAttribute Opportunity opportunity, RedirectAttributes redirectAttrs) {
+        Integer opportunityId = opportunity.getId();
+
+        List<Lead> leadsAsociados = leadRepository.findByOpportunityId(opportunityId);
+        System.out.println(leadsAsociados);
+        if (leadsAsociados.size() > 0) {
+            for (Lead lead : leadsAsociados) {
+                Integer leadId = lead.getId();
+                LeadFromWSP leadFromWSP = leadRepositoryFromWSP.findByLead(lead);
+
+
+                if (leadFromWSP != null) {
+                    leadRepositoryFromWSP.delete(leadFromWSP);
+                }
+
+                leadRepository.delete(lead);
+
+            }
+        }else{
+            System.out.println(opportunity.getId());
+
+            opportunityRepository.deleteById(opportunity.getId());
+        }
+
         redirectAttrs
                 .addFlashAttribute("mensaje", "Eliminado correctamente")
                 .addFlashAttribute("clase", "warning");
-        opportunityRepository.deleteById(opportunity.getId());
         return "redirect:/opportunity/show";
     }
 

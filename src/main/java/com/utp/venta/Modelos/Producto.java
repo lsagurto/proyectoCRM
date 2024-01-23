@@ -13,7 +13,7 @@ public class Producto {
     private Integer id;
 
     @NotNull(message = "Debes especificar el nombre")
-    @Size(min = 1, max = 100, message = "El nombre debe medir entre 1 y 50")
+    @Size(min = 1, max = 100, message = "El nombre debe medir entre 1 y 100")
     private String nombre;
 
     @NotNull(message = "Debes especificar el código")

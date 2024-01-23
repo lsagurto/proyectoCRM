@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface LeadRepository extends JpaRepository<Lead, Integer> {
     List<Lead> findByClienteNumeroDocumento(String numeroDocumento);
+    List<Lead> findByOpportunityId(Integer opportunityId);
 
 }

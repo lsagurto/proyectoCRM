@@ -19,6 +19,8 @@
                     <th>Asunto</th>
                     <th>Estado</th>
                     <th>Cliente</th>
+                    <th>Fec. Creación</th>
+                    <th>Fec. Edición</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
 
@@ -30,6 +32,8 @@
 
                     <td th:text="${lead.lead_id.estado}"></td>
                     <td th:text="${lead.nom_cliente}"></td>
+                    <td th:text="${#dates.format(lead.lead_id.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#dates.format(lead.lead_id.fechaModificacion, 'dd/MM/yyyy')}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/lead/editar/{leadId}(leadId=${lead.lead_id.id})}">Editar <i
                                 class="fa fa-edit"></i></a>

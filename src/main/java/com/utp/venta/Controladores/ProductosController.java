@@ -63,13 +63,15 @@ public class ProductosController {
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
     @PostMapping(value = "/editar/{id}")
-    public String actualizarProducto(@ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarProducto(@PathVariable Integer id, @ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
         if (bindingResult.hasErrors()) {
             if (producto.getId() != null) {
                 return "productos/editar_producto";
             }
             return "redirect:/productos/mostrar";
         }
+        Producto productoExistente = productosRepository.findById(id).orElse(null);
+
         Producto posibleProductoExistente = productosRepository.findFirstByCodigo(producto.getCodigo());
 
         if (posibleProductoExistente != null && !posibleProductoExistente.getId().equals(producto.getId())) {
@@ -79,14 +81,14 @@ public class ProductosController {
             return "redirect:/productos/agregar";
         }
 
+        producto.setFechaCreacion(productoExistente.getFechaCreacion());
+
         Date fechaActual = new Date();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(fechaActual);
         calendar.add(Calendar.HOUR_OF_DAY, -5);
         Date nuevaFechaModificacion = calendar.getTime();
-        producto.setFechaCreacion(nuevaFechaModificacion);
-
         producto.setFechaModificacion(nuevaFechaModificacion);
 
         productosRepository.save(producto);

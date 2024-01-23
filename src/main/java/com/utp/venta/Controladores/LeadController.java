@@ -220,7 +220,7 @@ public class LeadController {
             existingLead.setAsunto_lead(lead.getAsunto_lead());
             existingLead.setCliente(lead.getCliente());
             existingLead.setEstado(lead.getEstado());
-
+            System.out.println(lead.getEstado());
             TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
             Date fechaActual = new Date();
