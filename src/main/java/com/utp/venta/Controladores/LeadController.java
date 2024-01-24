@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
@@ -89,9 +90,9 @@ public class LeadController {
     }
 
     @PostMapping(value = "/convert/{id}")
-    public String convertLeadToOpportunity(@PathVariable int id, RedirectAttributes redirectAttrs) {
+    public String convertLeadToOpportunity(@PathVariable int id, RedirectAttributes redirectAttrs,HttpServletRequest request) {
         Lead lead = leadRepository.findById(id).orElse(null);
-
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (lead != null) {
 
             Opportunity opportunity = new Opportunity();
@@ -109,6 +110,8 @@ public class LeadController {
             calendar.add(Calendar.HOUR_OF_DAY, -5);
 
             Date nuevaFechaCreacion = calendar.getTime();
+            lead.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+            lead.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
 
             opportunity.setFechaCreacion(nuevaFechaCreacion);
 
@@ -136,9 +139,16 @@ public class LeadController {
 
         return "redirect:/lead/show";
     }
-
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
     @PostMapping(value = "/save")
-    public String saveLead (@ModelAttribute("lead") @Valid Lead lead, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String saveLead (@ModelAttribute("lead") @Valid Lead lead, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             // La validación ha fallado, redirige de vuelta al formulario
             redirectAttrs
@@ -159,6 +169,8 @@ public class LeadController {
         Date nuevaFechaCreacion = calendar.getTime();
 
         lead.setFechaCreacion(nuevaFechaCreacion);
+        lead.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+        lead.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
 
         lead.setEstado("Contactado");
 
@@ -173,7 +185,8 @@ public class LeadController {
             leadFromWSP.setEmail(cliente.getEmail());
             leadFromWSP.setNom_cliente(cliente.getNombre());
             leadFromWSP.setLead_id(lead);
-
+            leadFromWSP.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+            leadFromWSP.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
             leadRepositoryFromWSP.save(leadFromWSP);
         }
 
@@ -205,12 +218,18 @@ public class LeadController {
 
 
     @PostMapping(value = "/editar/{id}")
-    public String actualizarLead(@ModelAttribute @Valid Lead lead, BindingResult bindingResult, RedirectAttributes redirectAttrs, @PathVariable("id") Integer id) {
+    public String actualizarLead(@ModelAttribute @Valid Lead lead, BindingResult bindingResult, RedirectAttributes redirectAttrs, @PathVariable("id") Integer id,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             if (id != null) {
                 return "redirect:/lead/editar/" + id;
             }
             return "redirect:/lead/lead";
+        }
+        LeadFromWSP leadFromWSP = leadRepositoryFromWSP.findByLead(lead);
+        if (leadFromWSP != null) {
+            leadFromWSP.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+            leadFromWSP.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
         }
 
         Lead existingLead = leadRepository.findById(id).orElse(null);
@@ -233,6 +252,8 @@ public class LeadController {
             Date nuevaFechaModificacion = calendar.getTime();
 
             existingLead.setFechaModificacion(nuevaFechaModificacion);
+            existingLead.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+            existingLead.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
 
             leadRepository.save(existingLead);
 

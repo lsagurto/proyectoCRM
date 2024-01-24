@@ -24,6 +24,8 @@
                     <th style="text-align=center;">Ver Detalle</th>
                     <th>Fec. Creación</th>
                     <th>Fec. Edición</th>
+                    <th>Creado por</th>
+                    <th>Modif. por</th>
                     <th style="text-align=center;">Editar</th>
                     <th style="text-align=center;">Eliminar</th>
 
@@ -42,7 +44,8 @@
 
                     <td th:text="${#dates.format(opportunity.fechaCreacion, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#dates.format(opportunity.fechaModificacion, 'dd/MM/yyyy')}"></td>
-
+                    <td th:text="${opportunity.usuario_creacion}"></td>
+                    <td th:text="${opportunity.usuario_modificacion}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/opportunity/editar/} + ${opportunity.id}">Editar <i
                                 class="fa fa-edit"></i></a>

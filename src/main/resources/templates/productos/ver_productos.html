@@ -23,6 +23,8 @@
                     <th>Proveedor</th>
                     <th>Fec. Creación</th>
                     <th>Fec. Edición</th>
+                    <th>Creado por</th>
+                    <th>Modif. por</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -38,7 +40,10 @@
                         <span th:unless="${producto.proveedor != null}">Proveedor no especificado</span>
                     </td>
                     <td th:text="${#dates.format(producto.fechaCreacion, 'dd/MM/yyyy')}"></td>
+
                     <td th:text="${#dates.format(producto.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${producto.usuario_creacion}"></td>
+                    <td th:text="${producto.usuario_modificacion}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/productos/editar/} + ${producto.id}">Editar <i
                                 class="fa fa-edit"></i></a>

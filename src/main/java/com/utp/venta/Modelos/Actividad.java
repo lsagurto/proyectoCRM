@@ -58,8 +58,31 @@ public class Actividad implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
 
+    public void setUsuario_creacion(String usuario_creacion) {
+        this.usuario_creacion = usuario_creacion;
+    }
+
+    public void setUsuario_modificacion(String usuario_modificacion) {
+        this.usuario_modificacion = usuario_modificacion;
+    }
+
+    public String getUsuario_creacion() {
+        return usuario_creacion;
+    }
+
+    @Column(name = "usuario_creacion")
+    private String usuario_creacion;
+
+
+    @Column(name = "usuario_modificacion")
+    private String usuario_modificacion;
+
     public Date getFechaCreacion() {
         return fechaCreacion;
+    }
+
+    public String getUsuario_modificacion() {
+        return usuario_modificacion;
     }
 
     public void setFechaCreacion(Date fechaCreacion) {

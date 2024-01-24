@@ -78,7 +78,8 @@ public class OpportunityController {
     }
 
     @PostMapping(value = "/save")
-    public String saveLead (@ModelAttribute("opportunity") @Valid Opportunity opportunity, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String saveLead (@ModelAttribute("opportunity") @Valid Opportunity opportunity, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             // La validación ha fallado, redirige de vuelta al formulario
             redirectAttrs
@@ -99,7 +100,8 @@ public class OpportunityController {
         Date nuevaFechaCreacion = calendar.getTime();
 
         opportunity.setFechaCreacion(nuevaFechaCreacion);
-
+        opportunity.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
+        opportunity.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
         opportunity.setEstado("En proceso");
 
         opportunityRepository.save(opportunity);
@@ -127,9 +129,16 @@ public class OpportunityController {
 
         return "opportunity/edit_opportunity";
     }
-
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
     @PostMapping(value = "/editar/{id}")
-    public String actualizarOpportunity(@PathVariable int id, @ModelAttribute @Valid Opportunity opportunity, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarOpportunity(@PathVariable int id, @ModelAttribute @Valid Opportunity opportunity, BindingResult bindingResult, RedirectAttributes redirectAttrs ,HttpServletRequest request) {
+            Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             if (opportunity.getId() != null) {
                 return "opportunity/edit_opportunity";
@@ -169,7 +178,8 @@ public class OpportunityController {
         Date nuevaFechaModificacion = calendar.getTime();
 
         existingOpportunity.setFechaModificacion(nuevaFechaModificacion);
-
+        existingOpportunity.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+        existingOpportunity.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
         opportunityRepository.save(existingOpportunity);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")

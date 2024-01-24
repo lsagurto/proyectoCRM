@@ -3,6 +3,7 @@ package com.utp.venta.Controladores;
 
 import com.utp.venta.Modelos.Producto;
 import com.utp.venta.Modelos.Proveedor;
+import com.utp.venta.Modelos.Usuario;
 import com.utp.venta.Repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,8 +50,16 @@ public class ProveedorController {
     // a través del modelo, pero lo que yo quiero es que se vea la misma URL para regresar la vista con
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
     @PostMapping(value = "/editar/{id}")
-    public String actualizarProveedor(@PathVariable Integer id, @ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarProveedor(@PathVariable Integer id, @ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             if (proveedor.getId() != null) {
                 return "proveedores/editar_proveedor";
@@ -79,7 +89,8 @@ public class ProveedorController {
         calendar.add(Calendar.HOUR_OF_DAY, -5);
 
         Date nuevaFechaModificacion = calendar.getTime();
-
+        proveedor.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+        proveedor.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
         //proveedor.setFechaCreacion(proveedor.getFechaCreacion());
         proveedor.setFechaModificacion(nuevaFechaModificacion);
 
@@ -97,7 +108,8 @@ public class ProveedorController {
     }
 
     @PostMapping(value = "/agregar")
-    public String guardarProveedor(@ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String guardarProveedor(@ModelAttribute @Valid Proveedor proveedor, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             return "proveedores/agregar_proveedor";
         }
@@ -117,7 +129,7 @@ public class ProveedorController {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(fechaActual);
-
+        proveedor.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
         calendar.add(Calendar.HOUR_OF_DAY, -5);
 
         Date nuevaFechaCreacion = calendar.getTime();

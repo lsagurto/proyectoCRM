@@ -23,6 +23,8 @@
                     <th>Telefono</th>
                     <th>Fec. Creación</th>
                     <th>Fec. Edición</th>
+                    <th>Creado por</th>
+                    <th>Modif. por</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -42,6 +44,8 @@
                     <td th:text="${cliente.telefono}"></td>
                     <td th:text="${#dates.format(cliente.fechaCreacion, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#dates.format(cliente.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${cliente.usuario_creacion}"></td>
+                    <td th:text="${cliente.usuario_modificacion}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/cliente/editar/} + ${cliente.id}">Editar <i
                                 class="fa fa-edit"></i></a>

@@ -73,7 +73,8 @@ public class ClienteController {
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
     @PostMapping(value = "/editar/{id}")
-    public String actualizarCliente(@PathVariable Integer id, @ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarCliente(@PathVariable Integer id, @ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs, HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             if (cliente.getId() != null) {
                 return "cliente/editar_cliente";
@@ -98,6 +99,7 @@ public class ClienteController {
         existingCliente.setNombre(cliente.getNombre());
         existingCliente.setTelefono(cliente.getTelefono());
         existingCliente.setNumeroDocumento(cliente.getNumeroDocumento());
+        existingCliente.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
@@ -129,7 +131,8 @@ public class ClienteController {
     }
 
     @PostMapping(value = "/agregar")
-    public String guardarCliente(@ModelAttribute @Valid Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+    public String guardarCliente(@ModelAttribute @Valid Cliente cliente,@ModelAttribute Usuario usuarios, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             return "cliente/agregar_cliente";
         }
@@ -166,13 +169,15 @@ public class ClienteController {
             apellidoMaterno = obtenerValorDelCampo(jsonResponse, "apellidoMaterno");
 
             cliente.setNombre(nombres+" "+apellidoMaterno+" "+apellidoPaterno);
+            cliente.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+            cliente.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
 
 
         }
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")
                 .addFlashAttribute("clasxe", "success");
-        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
+
         cliente.setidUsuario(usuarioBuscadoPorCodigo.getId());
 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

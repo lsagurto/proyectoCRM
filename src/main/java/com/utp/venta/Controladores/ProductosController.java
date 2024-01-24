@@ -63,7 +63,8 @@ public class ProductosController {
     // los errores en lugar de hacer un redirect, ya que si hago un redirect, no se muestran los errores del formulario
     // y por eso regreso mejor la vista ;)
     @PostMapping(value = "/editar/{id}")
-    public String actualizarProducto(@PathVariable Integer id, @ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String actualizarProducto(@PathVariable Integer id, @ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs,  HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             if (producto.getId() != null) {
                 return "productos/editar_producto";
@@ -90,7 +91,7 @@ public class ProductosController {
         calendar.add(Calendar.HOUR_OF_DAY, -5);
         Date nuevaFechaModificacion = calendar.getTime();
         producto.setFechaModificacion(nuevaFechaModificacion);
-
+        producto.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
         productosRepository.save(producto);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Editado correctamente")
@@ -477,8 +478,16 @@ public class ProductosController {
 
         return "redirect:/opportunity/detail_opportunity/" + opportunity.getId();
     }
+    private Usuario obtenerUsuario(HttpServletRequest request){
+        Usuario usuarios = (Usuario) request.getSession().getAttribute("usuario");
+        if(usuarios == null){
+            usuarios = new Usuario();
+        }
+        return usuarios;
+    }
     @PostMapping(value = "/agregar")
-    public String guardarProducto(@ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs) {
+    public String guardarProducto(@ModelAttribute @Valid Producto producto, BindingResult bindingResult, RedirectAttributes redirectAttrs,HttpServletRequest request) {
+        Usuario usuarioBuscadoPorCodigo = this.obtenerUsuario(request);
         if (bindingResult.hasErrors()) {
             return "productos/agregar_producto";
         }
@@ -497,7 +506,8 @@ public class ProductosController {
         Date nuevaFechaCreacion = calendar.getTime();
 
         producto.setFechaCreacion(nuevaFechaCreacion);
-
+        producto.setUsuario_creacion(usuarioBuscadoPorCodigo.getUsername());
+        producto.setUsuario_modificacion(usuarioBuscadoPorCodigo.getUsername());
         productosRepository.save(producto);
         redirectAttrs
                 .addFlashAttribute("mensaje", "Agregado correctamente")

@@ -22,6 +22,8 @@
                     <th>Email</th>
                     <th>Fec. Creación</th>
                     <th>Fec. Edición</th>
+                    <th>Creado por</th>
+                    <th>Modif. por</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -39,6 +41,8 @@
                     <td th:text="${proveedor.email}"></td>
                     <td th:text="${#dates.format(proveedor.fechaCreacion, 'dd/MM/yyyy')}"></td>
                     <td th:text="${#dates.format(proveedor.fechaModificacion, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${proveedor.usuario_creacion}"></td>
+                    <td th:text="${proveedor.usuario_modificacion}"></td>
                     <td>
                         <a class="btn btn-warning" th:href="@{/proveedor/editar/} + ${proveedor.id}">Editar <i
                                 class="fa fa-edit"></i></a>

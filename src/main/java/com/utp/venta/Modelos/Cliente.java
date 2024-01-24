@@ -94,6 +94,7 @@ public class Cliente implements Serializable {
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
         this.idUsuario = idUsuario;
+        //this.fechaCreacion = fecha
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -148,4 +149,28 @@ public class Cliente implements Serializable {
     private String tipoDocumento;
 
     private Integer idUsuario;
+
+    public String getUsuario_creacion() {
+        return usuario_creacion;
+    }
+
+    public void setUsuario_creacion(String usuario_creacion) {
+        this.usuario_creacion = usuario_creacion;
+    }
+
+    public String getUsuario_modificacion() {
+        return usuario_modificacion;
+    }
+
+    public void setUsuario_modificacion(String usuario_modificacion) {
+        this.usuario_modificacion = usuario_modificacion;
+    }
+
+    @Column(name = "usuario_creacion")
+    private String usuario_creacion;
+
+
+    @Column(name = "usuario_modificacion")
+    private String usuario_modificacion;
+
 }
