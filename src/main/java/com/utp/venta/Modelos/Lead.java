@@ -10,7 +10,7 @@ import java.util.Date;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "lead")
+@Table(name = "`lead`")
 public class Lead implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +21,11 @@ public class Lead implements Serializable {
     @Size(min = 1, max = 50, message = "El asunto del lead debe medir entre 1 y 50")
     private String asunto_lead;
 
-    @ManyToOne
+    @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id") // Nombre de la columna en la tabla Lead que almacena la relación con Cliente
     private Cliente cliente;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE) //,fetch = FetchType.LAZY
     @JoinColumn(name = "opportunity_id")
     private Opportunity opportunity;
 
