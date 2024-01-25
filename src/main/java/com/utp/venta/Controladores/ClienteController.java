@@ -127,7 +127,7 @@ public class ClienteController {
     @GetMapping(value = "/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable int id, Model model) {
         model.addAttribute("cliente", clienteRepository.findById(id).orElse(null));
-        return "CLIENTE/editar_cliente";
+        return "cliente/editar_cliente";
     }
 
     @PostMapping(value = "/agregar")
